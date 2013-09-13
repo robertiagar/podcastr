@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.20623.1 VSUPREVIEW
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PodcastR.Desktop", "PodcastR.Desktop\PodcastR.Desktop.csproj", "{81465B2D-3EE6-4895-BF3C-ADB188F35F7A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PodcastR.WebAPI", "PodcastR.WebAPI\PodcastR.WebAPI.csproj", "{5EF0155D-C485-4D03-8473-F1A7FA5104B7}"
@@ -8,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PodcastR.Web", "PodcastR.Web\PodcastR.Web.csproj", "{D6DC6A91-0973-423C-AA7F-F7D7B3554D4F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PodcastR.WindowsStore", "PodcastR.WindowsStore\PodcastR.WindowsStore.csproj", "{6D77BEE5-B224-4E6C-828A-B6C53AD385FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PodcastR.Core", "PodcastR.Core\PodcastR.Core.csproj", "{B59A7171-D627-489E-9779-4C8269599290}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +79,16 @@ Global
 		{6D77BEE5-B224-4E6C-828A-B6C53AD385FF}.Release|x86.ActiveCfg = Release|x86
 		{6D77BEE5-B224-4E6C-828A-B6C53AD385FF}.Release|x86.Build.0 = Release|x86
 		{6D77BEE5-B224-4E6C-828A-B6C53AD385FF}.Release|x86.Deploy.0 = Release|x86
+		{B59A7171-D627-489E-9779-4C8269599290}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B59A7171-D627-489E-9779-4C8269599290}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B59A7171-D627-489E-9779-4C8269599290}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{B59A7171-D627-489E-9779-4C8269599290}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B59A7171-D627-489E-9779-4C8269599290}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B59A7171-D627-489E-9779-4C8269599290}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B59A7171-D627-489E-9779-4C8269599290}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B59A7171-D627-489E-9779-4C8269599290}.Release|ARM.ActiveCfg = Release|Any CPU
+		{B59A7171-D627-489E-9779-4C8269599290}.Release|x64.ActiveCfg = Release|Any CPU
+		{B59A7171-D627-489E-9779-4C8269599290}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
