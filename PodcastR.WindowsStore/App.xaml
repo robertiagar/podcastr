@@ -6,19 +6,9 @@
     xmlns:localData="using:PodcastR.WindowsStore.Data">
 
     <Application.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
+        <!-- Application-specific resources -->
 
-                <!-- 
-                    Styles that define common aspects of the platform look and feel
-                    Required by Visual Studio project and item templates
-                 -->
-                <ResourceDictionary Source="Common/StandardStyles.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
+        <x:String x:Key="AppName">PodcastR.WindowsStore</x:String>
 
-            <!-- Application-specific resources -->
-
-            <x:String x:Key="AppName">PodcastR.WindowsStore</x:String>
-        </ResourceDictionary>
     </Application.Resources>
 </Application>
