@@ -70,6 +70,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <Image Source="Assets/MediumGray.png" Stretch="Fill" Width="420" Height="280"/>
@@ -79,6 +80,7 @@
                                    x:Uid="DescriptionHeader" Text="Description text:"/>
                         <TextBlock Style="{StaticResource BodyTextBlockStyle}" Grid.Row="3"
                                    x:Uid="Section1DescriptionText" Text="Lorem ipsum dolor sit amet, consectetuer ising elit, sed diam nonummy nibh uismod tincidunt ut laoreet suscipit lobortis ni ut wisi quipexerci quis consequat minim veniam, quis nostrud exerci tation ullam corper. Lorem ipsum dolor sit amet, consectetuer ising elit, sed diam nonummy nibh uismod tincidunt ut laoreet suscipit lobortis ni ut wisi quipexerci quis consequat minim veniam, quis nostrud exerci tation ullam corper. "/>
+                        <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="{Binding Progress}" Grid.Row="4"></TextBlock>
                     </Grid>
                 </DataTemplate>
             </HubSection>

@@ -8,6 +8,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Networking.BackgroundTransfer;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -72,6 +73,13 @@ namespace PodcastR.WindowsStore
             var podcasts = await PodcastR.Data.Services.PodcastService.LoadPodcastAsync("http://www.goingquantum.ca/podcastgen/feed.xml");
             await PodcastR.Data.Services.PodcastService.SavePodcastsToLocalStorage(new[] { podcasts });
             var podcastsFromLocal = await PodcastR.Data.Services.PodcastService.GetPodcastsFromStorageAsync();
+            await PodcastR.Data.Services.PodcastDownloaderService.DownloadPodcastEpisodeAsync(podcasts.Episodes[1], p =>
+            {
+                if (p.Progress.TotalBytesToReceive > 0)
+                {
+                    defaultViewModel["Progress"] = p.Progress.BytesReceived * 100 / p.Progress.TotalBytesToReceive;
+                }
+            });
             await Task.Delay(100);
         }
 
