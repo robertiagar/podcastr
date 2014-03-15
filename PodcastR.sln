@@ -5,6 +5,10 @@ VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PodcastR.WindowsStore", "PodcastR.WindowsStore\PodcastR.WindowsStore.csproj", "{1F500159-F468-4BA2-BFAB-262E2BD2EE8B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PodcastR.AzureMobileService", "PodcastR.AzureMobileService\PodcastR.AzureMobileService.csproj", "{C87BF6A0-D44C-4695-B662-FE3F41C036BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PodcastR.Data", "PodcastR.Data\PodcastR.Data.csproj", "{0F3C092E-3265-4E32-B36A-F334A14EBAFB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +45,38 @@ Global
 		{1F500159-F468-4BA2-BFAB-262E2BD2EE8B}.Release|x86.ActiveCfg = Release|x86
 		{1F500159-F468-4BA2-BFAB-262E2BD2EE8B}.Release|x86.Build.0 = Release|x86
 		{1F500159-F468-4BA2-BFAB-262E2BD2EE8B}.Release|x86.Deploy.0 = Release|x86
+		{C87BF6A0-D44C-4695-B662-FE3F41C036BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C87BF6A0-D44C-4695-B662-FE3F41C036BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C87BF6A0-D44C-4695-B662-FE3F41C036BF}.Debug|ARM.ActiveCfg = Debug|ARM
+		{C87BF6A0-D44C-4695-B662-FE3F41C036BF}.Debug|ARM.Build.0 = Debug|ARM
+		{C87BF6A0-D44C-4695-B662-FE3F41C036BF}.Debug|x64.ActiveCfg = Debug|x64
+		{C87BF6A0-D44C-4695-B662-FE3F41C036BF}.Debug|x64.Build.0 = Debug|x64
+		{C87BF6A0-D44C-4695-B662-FE3F41C036BF}.Debug|x86.ActiveCfg = Debug|x86
+		{C87BF6A0-D44C-4695-B662-FE3F41C036BF}.Debug|x86.Build.0 = Debug|x86
+		{C87BF6A0-D44C-4695-B662-FE3F41C036BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C87BF6A0-D44C-4695-B662-FE3F41C036BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C87BF6A0-D44C-4695-B662-FE3F41C036BF}.Release|ARM.ActiveCfg = Release|ARM
+		{C87BF6A0-D44C-4695-B662-FE3F41C036BF}.Release|ARM.Build.0 = Release|ARM
+		{C87BF6A0-D44C-4695-B662-FE3F41C036BF}.Release|x64.ActiveCfg = Release|x64
+		{C87BF6A0-D44C-4695-B662-FE3F41C036BF}.Release|x64.Build.0 = Release|x64
+		{C87BF6A0-D44C-4695-B662-FE3F41C036BF}.Release|x86.ActiveCfg = Release|x86
+		{C87BF6A0-D44C-4695-B662-FE3F41C036BF}.Release|x86.Build.0 = Release|x86
+		{0F3C092E-3265-4E32-B36A-F334A14EBAFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F3C092E-3265-4E32-B36A-F334A14EBAFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F3C092E-3265-4E32-B36A-F334A14EBAFB}.Debug|ARM.ActiveCfg = Debug|ARM
+		{0F3C092E-3265-4E32-B36A-F334A14EBAFB}.Debug|ARM.Build.0 = Debug|ARM
+		{0F3C092E-3265-4E32-B36A-F334A14EBAFB}.Debug|x64.ActiveCfg = Debug|x64
+		{0F3C092E-3265-4E32-B36A-F334A14EBAFB}.Debug|x64.Build.0 = Debug|x64
+		{0F3C092E-3265-4E32-B36A-F334A14EBAFB}.Debug|x86.ActiveCfg = Debug|x86
+		{0F3C092E-3265-4E32-B36A-F334A14EBAFB}.Debug|x86.Build.0 = Debug|x86
+		{0F3C092E-3265-4E32-B36A-F334A14EBAFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F3C092E-3265-4E32-B36A-F334A14EBAFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F3C092E-3265-4E32-B36A-F334A14EBAFB}.Release|ARM.ActiveCfg = Release|ARM
+		{0F3C092E-3265-4E32-B36A-F334A14EBAFB}.Release|ARM.Build.0 = Release|ARM
+		{0F3C092E-3265-4E32-B36A-F334A14EBAFB}.Release|x64.ActiveCfg = Release|x64
+		{0F3C092E-3265-4E32-B36A-F334A14EBAFB}.Release|x64.Build.0 = Release|x64
+		{0F3C092E-3265-4E32-B36A-F334A14EBAFB}.Release|x86.ActiveCfg = Release|x86
+		{0F3C092E-3265-4E32-B36A-F334A14EBAFB}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

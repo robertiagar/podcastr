@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -14,6 +15,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+
 
 // The Hub Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=321224
 
@@ -67,6 +69,10 @@ namespace PodcastR.WindowsStore
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
             var sampleDataGroup = await SampleDataSource.GetGroupAsync("Group-4");
             this.DefaultViewModel["Section3Items"] = sampleDataGroup;
+            var podcasts = await PodcastR.Data.Services.PodcastService.LoadPodcastAsync("http://www.goingquantum.ca/podcastgen/feed.xml");
+            await PodcastR.Data.Services.PodcastService.SavePodcastsToLocalStorage(new[] { podcasts });
+            var podcastsFromLocal = await PodcastR.Data.Services.PodcastService.GetPodcastsFromStorageAsync();
+            await Task.Delay(100);
         }
 
         /// <summary>
@@ -94,6 +100,7 @@ namespace PodcastR.WindowsStore
             var itemId = ((SampleDataItem)e.ClickedItem).UniqueId;
             this.Frame.Navigate(typeof(ItemPage), itemId);
         }
+
         #region NavigationHelper registration
 
         /// The methods provided in this section are simply used to allow
