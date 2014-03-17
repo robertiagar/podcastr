@@ -15,6 +15,7 @@ namespace PodcastR.Data.Services
     public class PodcastService
     {
         private static readonly string PodcastsFilename = "podcasts.json";
+        private static IList<Podcast> podcasts = new List<Podcast>();
 
         public static async Task<IList<Podcast>> GetPodcastsFromStorageAsync()
         {
@@ -22,7 +23,15 @@ namespace PodcastR.Data.Services
             if (file != null)
             {
                 var podcastsJson = await FileIO.ReadTextAsync(file);
-                return JsonConvert.DeserializeObject<IList<Podcast>>(podcastsJson);
+                var podcasts = JsonConvert.DeserializeObject<IList<Podcast>>(podcastsJson);
+                foreach (var podcast in podcasts)
+                {
+                    foreach (var episode in podcast.Episodes)
+                    {
+                        episode.Podcast = podcast;
+                    }
+                }
+                return podcasts;
             }
 
             return null;
@@ -53,7 +62,8 @@ namespace PodcastR.Data.Services
 
         public static async Task<Podcast> LoadPodcastAsync(string url)
         {
-            return await LoadPodcastAsync(new Uri(url));
+            var podcast = await LoadPodcastAsync(new Uri(url));
+            return podcast;
         }
 
         public static async Task<Podcast> LoadPodcastAsync(Uri url)
@@ -99,6 +109,16 @@ namespace PodcastR.Data.Services
                 StorageFile file = await ApplicationData.Current.RoamingFolder.CreateFileAsync(PodcastsFilename, CreationCollisionOption.ReplaceExisting);
                 await FileIO.WriteTextAsync(file, podcastsJson);
             }
+        }
+
+        public static async Task<Podcast> GetLatestPodcast()
+        {
+            if (podcasts.Count != 0)
+                return podcasts.FirstOrDefault();
+
+            podcasts = await GetPodcastsFromStorageAsync();
+
+            return podcasts.FirstOrDefault();
         }
     }
 }

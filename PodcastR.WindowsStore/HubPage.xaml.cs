@@ -1,4 +1,5 @@
-﻿using PodcastR.WindowsStore.Common;
+﻿using PodcastR.Data.Services;
+using PodcastR.WindowsStore.Common;
 using PodcastR.WindowsStore.Data;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace PodcastR.WindowsStore
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
+        private System.Threading.CancellationTokenSource cts = new System.Threading.CancellationTokenSource();
 
         /// <summary>
         /// NavigationHelper is used on each page to aid in navigation and 
@@ -68,19 +70,29 @@ namespace PodcastR.WindowsStore
         private async void navigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
-            var sampleDataGroup = await SampleDataSource.GetGroupAsync("Group-4");
-            this.DefaultViewModel["Section3Items"] = sampleDataGroup;
-            var podcasts = await PodcastR.Data.Services.PodcastService.LoadPodcastAsync("http://www.goingquantum.ca/podcastgen/feed.xml");
-            await PodcastR.Data.Services.PodcastService.SavePodcastsToLocalStorage(new[] { podcasts });
-            var podcastsFromLocal = await PodcastR.Data.Services.PodcastService.GetPodcastsFromStorageAsync();
-            await PodcastR.Data.Services.PodcastDownloaderService.DownloadPodcastEpisodeAsync(podcasts.Episodes[1], p =>
-            {
-                if (p.Progress.TotalBytesToReceive > 0)
-                {
-                    defaultViewModel["Progress"] = p.Progress.BytesReceived * 100 / p.Progress.TotalBytesToReceive;
-                }
-            });
-            await Task.Delay(100);
+            var latestPodcast = await PodcastService.GetLatestPodcast();
+            var latestEpisodes = await PodcastService.GetPodcastEpisodesFromStorageAsync(latestPodcast);
+            this.DefaultViewModel["LatestPodcast"] = latestPodcast;
+            this.DefaultViewModel["LatestEpisodesPlayed"] = latestEpisodes.Take(6);
+            //var podcasts = await PodcastR.Data.Services.PodcastService.LoadPodcastAsync("http://www.goingquantum.ca/podcastgen/feed.xml");
+            //await PodcastR.Data.Services.PodcastService.SavePodcastsToLocalStorage(new[] { podcasts });
+            //var podcastsFromLocal = await PodcastR.Data.Services.PodcastService.GetPodcastsFromStorageAsync();
+            //var episode = await PodcastR.Data.Services.PodcastDownloaderService.DownloadPodcastEpisodeAsync(podcastsFromLocal[0].Episodes[2], p =>
+            //{
+            //    if (p.Progress.TotalBytesToReceive > 0)
+            //    {
+            //        defaultViewModel["Progress"] = p.Progress.BytesReceived * 100 / p.Progress.TotalBytesToReceive;
+            //    }
+            //    if (int.Parse(defaultViewModel["Progress"].ToString()) == 100)
+            //    {
+            //        defaultViewModel["Progress"] = "Downlod succesfull.";
+            //    }
+            //}, cts, errorCallback: () =>
+            //{
+            //    defaultViewModel["Progress"] = "Download cancelled or something went wrong.";
+            //});
+
+            //await Task.Delay(100);
         }
 
         /// <summary>
