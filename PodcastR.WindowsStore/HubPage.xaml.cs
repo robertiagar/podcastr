@@ -70,10 +70,20 @@ namespace PodcastR.WindowsStore
         private async void navigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
-            var latestPodcast = await PodcastService.GetLatestPodcast();
-            var latestEpisodes = await PodcastService.GetPodcastEpisodesFromStorageAsync(latestPodcast);
-            this.DefaultViewModel["LatestPodcast"] = latestPodcast;
-            this.DefaultViewModel["LatestEpisodesPlayed"] = latestEpisodes.Take(6);
+            var subscriptions = await PodcastService.GetSubscriptions(6);
+            this.DefaultViewModel["Subscriptions"] = subscriptions;
+            var episodes = await PodcastService.GetLatestEpisodesAsync(6);
+            this.DefaultViewModel["Episodes"] = episodes;
+            //var podcast = await PodcastService.LoadPodcastAsync("http://pwop.com/feed.aspx?show=hanselminutes&filetype=master");
+            //var p = await PodcastService.LoadPodcastAsync("http://www.goingquantum.ca/podcastgen/feed.xml");
+            //await PodcastService.SavePodcastsToLocalStorage(new[] { podcast, p });
+            //var latestPodcast = await PodcastService.GetLatestPodcast();
+            //var latestEpisodes = await PodcastService.GetPodcastEpisodesFromStorageAsync(latestPodcast);
+            //this.DefaultViewModel["LatestPodcast"] = latestPodcast;
+            //this.DefaultViewModel["LatestEpisodesPlayed"] = latestEpisodes.Take(6);
+            ////var p = await PodcastService.LoadPodcastAsync("http://www.goingquantum.ca/podcastgen/feed.xml");
+            //await PodcastService.SavePodcastsToLocalStorage(new[] { p });
+            //var test = await PodcastService.GetLatestEpisodesAsync(6);
             //var podcasts = await PodcastR.Data.Services.PodcastService.LoadPodcastAsync("http://www.goingquantum.ca/podcastgen/feed.xml");
             //await PodcastR.Data.Services.PodcastService.SavePodcastsToLocalStorage(new[] { podcasts });
             //var podcastsFromLocal = await PodcastR.Data.Services.PodcastService.GetPodcastsFromStorageAsync();

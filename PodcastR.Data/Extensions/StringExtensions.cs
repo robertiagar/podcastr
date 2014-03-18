@@ -13,5 +13,10 @@ namespace PodcastR.Data.Extensions
             var index = input.LastIndexOf('.');
             return input.Substring(index);
         }
+
+        public static DateTime ToDateTime(this string input)
+        {
+            return DateTime.Parse(input.Remove(input.LastIndexOf(" ")));
+        }
     }
 }

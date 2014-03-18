@@ -20,12 +20,29 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}" Height="150">
-                    <Image Source="{Binding Podcast.ImageUrl}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
+                    <Image Source="{Binding Podcast.ImageUrl}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Name}"/>
                 </Border>
                 <StackPanel Grid.Row="1" Margin="0,10,0,0">
                     <TextBlock Text="{Binding Name}" Style="{StaticResource TitleTextBlockStyle}" TextWrapping="NoWrap"/>
                     <TextBlock Text="{Binding Author}" Style="{StaticResource BodyTextBlockStyle}" MaxHeight="60" />
+                    <TextBlock Text="{Binding Published}" Style="{StaticResource BodyTextBlockStyle}" MaxHeight="60"/>
                 </StackPanel>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="Standard300x260ItemTemplate">
+            <Grid Height="300" Width="250" Margin="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}" Height="250">
+                    <Image Source="{Binding ImageUrl}" Stretch="Fill" AutomationProperties.Name="{Binding Name}"/>
+                </Border>
+                <Border Grid.Row="1">
+                    <StackPanel Margin="10">
+                        <TextBlock Text="{Binding Name}" Style="{StaticResource TitleTextBlockStyle}" TextWrapping="NoWrap"/>
+                    </StackPanel>
+                </Border>
             </Grid>
         </DataTemplate>
     </Page.Resources>
@@ -63,9 +80,21 @@
                     <ImageBrush ImageSource="Assets/MediumGray.png" Stretch="UniformToFill" />
                 </HubSection.Background>
             </HubSection>
-            <HubSection Width="500" x:Uid="Section1Header" Header="Latest Podcast Played" DataContext="{Binding LatestPodcast}">
+            <HubSection Width="500" x:Uid="Section1Header" Header="Subscriptions" DataContext="{Binding Subscriptions}" IsHeaderInteractive="True">
                 <DataTemplate>
-                    <Grid>
+                    <GridView
+                        x:Name="itemGridView"
+                        ItemsSource="{Binding}"
+                        Margin="-9,-14,0,0"
+                        AutomationProperties.AutomationId="ItemGridView"
+                        AutomationProperties.Name="Items In Group"
+                        ItemTemplate="{StaticResource  Standard300x260ItemTemplate}"
+                        SelectionMode="None"
+                        IsSwipeEnabled="false"
+                        IsItemClickEnabled="True"
+                        ItemClick="ItemView_ItemClick">
+                    </GridView>
+                    <!--<Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -80,11 +109,11 @@
                                    Text="Description:"/>
                         <TextBlock Style="{StaticResource BodyTextBlockStyle}" Grid.Row="3"
                                    Text="{Binding Description}"/>
-                    </Grid>
+                    </Grid>-->
                 </DataTemplate>
             </HubSection>
-            <HubSection DataContext="{Binding LatestEpisodesPlayed}"
-                        x:Uid="Section3Header" Header="Section 3" Padding="40,40,40,32">
+            <HubSection DataContext="{Binding Episodes}"
+                        x:Uid="Section3Header" Header="Episodes" Padding="40,40,40,32">
                 <DataTemplate>
                     <GridView
                         x:Name="itemGridView"

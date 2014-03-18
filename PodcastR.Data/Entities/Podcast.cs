@@ -13,6 +13,7 @@ namespace PodcastR.Data.Entities
         public Uri ImageUrl { get; set; }
         public string Description { get; set; }
         public string Author { get; set; }
+        public DateTime DateAdded { get; set; }
 
 
         public virtual IList<Episode> Episodes { get; set; }

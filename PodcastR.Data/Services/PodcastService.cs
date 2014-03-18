@@ -17,7 +17,24 @@ namespace PodcastR.Data.Services
         private static readonly string PodcastsFilename = "podcasts.json";
         private static IList<Podcast> podcasts = new List<Podcast>();
 
-        public static async Task<IList<Podcast>> GetPodcastsFromStorageAsync()
+        private static async Task CheckForNewEpisodes(Podcast podcast)
+        {
+            var httpClient = new HttpClient();
+            var xml = await httpClient.GetStringAsync(podcast.FeedUrl);
+            var xmlDocument = XDocument.Parse(xml);
+
+            var elements = xmlDocument.Element("rss").Element("channel").Elements("item");
+            foreach (var element in elements)
+            {
+                var episode = new Episode(element);
+                if (!podcast.Episodes.Any(e => string.Compare(e.Name, episode.Name) == 0))
+                {
+                    podcast.Episodes.Add(episode);
+                }
+            }
+        }
+
+        private static async Task<IList<Podcast>> GetPodcastsFromStorageAsync()
         {
             StorageFile file = await ApplicationData.Current.RoamingFolder.GetFileAsync(PodcastsFilename);
             if (file != null)
@@ -37,21 +54,34 @@ namespace PodcastR.Data.Services
             return null;
         }
 
-        public static async Task CheckForNewEpisodes(Podcast podcast)
+        public static async Task<IList<Episode>> GetLatestEpisodesAsync(int numberOfEpisodes)
         {
-            var httpClient = new HttpClient();
-            var xml = await httpClient.GetStringAsync(podcast.FeedUrl);
-            var xmlDocument = XDocument.Parse(xml);
-
-            var elements = xmlDocument.Element("rss").Element("channel").Elements("item");
-            foreach (var element in elements)
+            var podcasts = await GetPodcastsFromStorageAsync();
+            foreach (var podcast in podcasts)
             {
-                var episode = new Episode(element);
-                if (!podcast.Episodes.Any(e => string.Compare(e.Name, episode.Name) == 0))
-                {
-                    podcast.Episodes.Add(episode);
-                }
+                await CheckForNewEpisodes(podcast);
             }
+
+            IList<Episode> episodes;
+            if (numberOfEpisodes != 0)
+                episodes = podcasts.SelectMany(p => p.Episodes).OrderByDescending(e => e.Published).Take(numberOfEpisodes).ToList();
+            else
+                episodes = podcasts.SelectMany(p => p.Episodes).OrderByDescending(e => e.Published).ToList();
+
+            return episodes;
+        }
+
+        public static async Task<IList<Podcast>> GetSubscriptions(int numberOfSubscriptions)
+        {
+            var podcasts = await GetPodcastsFromStorageAsync();
+
+            IList<Podcast> result = null;
+            if (numberOfSubscriptions != 0)
+                result = podcasts.OrderByDescending(p => p.DateAdded).Take(numberOfSubscriptions).ToList();
+            else
+                result = podcasts.OrderByDescending(p => p.DateAdded).ToList();
+
+            return result;
         }
 
         public static async Task<IList<Episode>> GetPodcastEpisodesFromStorageAsync(Podcast podcast)
@@ -85,7 +115,8 @@ namespace PodcastR.Data.Services
                 Name = channelTitle,
                 ImageUrl = new Uri(imageUrl),
                 Author = author,
-                Description = description
+                Description = description,
+                DateAdded = DateTime.Now
             };
 
             var episodes = new List<Episode>();
@@ -109,16 +140,6 @@ namespace PodcastR.Data.Services
                 StorageFile file = await ApplicationData.Current.RoamingFolder.CreateFileAsync(PodcastsFilename, CreationCollisionOption.ReplaceExisting);
                 await FileIO.WriteTextAsync(file, podcastsJson);
             }
-        }
-
-        public static async Task<Podcast> GetLatestPodcast()
-        {
-            if (podcasts.Count != 0)
-                return podcasts.FirstOrDefault();
-
-            podcasts = await GetPodcastsFromStorageAsync();
-
-            return podcasts.FirstOrDefault();
         }
     }
 }
