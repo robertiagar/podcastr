@@ -16,7 +16,10 @@ namespace PodcastR.Data.Extensions
 
         public static DateTime ToDateTime(this string input)
         {
-            return DateTime.Parse(input.Remove(input.LastIndexOf(" ")));
+            var index = input.LastIndexOf(" ");
+            var stringResult = input.Remove(index).Replace("Thurs", "Thu");
+            var dateResult = DateTime.Parse(stringResult);
+            return dateResult;
         }
     }
 }

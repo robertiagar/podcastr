@@ -1,6 +1,8 @@
-﻿using PodcastR.Data.Services;
+﻿using PodcastR.Data.Entities;
+using PodcastR.Data.Services;
 using PodcastR.WindowsStore.Common;
 using PodcastR.WindowsStore.Data;
+using PodcastR.WindowsStore.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -70,23 +72,11 @@ namespace PodcastR.WindowsStore
         private async void navigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
-            var subscriptions = await PodcastService.GetSubscriptions(6);
-            this.DefaultViewModel["Subscriptions"] = subscriptions;
-            var episodes = await PodcastService.GetLatestEpisodesAsync(6);
-            this.DefaultViewModel["Episodes"] = episodes;
-            //var podcast = await PodcastService.LoadPodcastAsync("http://pwop.com/feed.aspx?show=hanselminutes&filetype=master");
-            //var p = await PodcastService.LoadPodcastAsync("http://www.goingquantum.ca/podcastgen/feed.xml");
-            //await PodcastService.SavePodcastsToLocalStorage(new[] { podcast, p });
-            //var latestPodcast = await PodcastService.GetLatestPodcast();
-            //var latestEpisodes = await PodcastService.GetPodcastEpisodesFromStorageAsync(latestPodcast);
-            //this.DefaultViewModel["LatestPodcast"] = latestPodcast;
-            //this.DefaultViewModel["LatestEpisodesPlayed"] = latestEpisodes.Take(6);
-            ////var p = await PodcastService.LoadPodcastAsync("http://www.goingquantum.ca/podcastgen/feed.xml");
-            //await PodcastService.SavePodcastsToLocalStorage(new[] { p });
-            //var test = await PodcastService.GetLatestEpisodesAsync(6);
-            //var podcasts = await PodcastR.Data.Services.PodcastService.LoadPodcastAsync("http://www.goingquantum.ca/podcastgen/feed.xml");
-            //await PodcastR.Data.Services.PodcastService.SavePodcastsToLocalStorage(new[] { podcasts });
-            //var podcastsFromLocal = await PodcastR.Data.Services.PodcastService.GetPodcastsFromStorageAsync();
+            var viewModel = new MainViewModel();
+            await viewModel.LoadPodcastsAsync();
+            this.DataContext = viewModel;
+            await viewModel.LoadNewEpisodesAsync();
+            await viewModel.SavePodcastsAsync();
             //var episode = await PodcastR.Data.Services.PodcastDownloaderService.DownloadPodcastEpisodeAsync(podcastsFromLocal[0].Episodes[2], p =>
             //{
             //    if (p.Progress.TotalBytesToReceive > 0)
@@ -101,8 +91,6 @@ namespace PodcastR.WindowsStore
             //{
             //    defaultViewModel["Progress"] = "Download cancelled or something went wrong.";
             //});
-
-            //await Task.Delay(100);
         }
 
         /// <summary>

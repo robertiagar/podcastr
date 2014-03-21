@@ -17,21 +17,28 @@ namespace PodcastR.Data.Services
         private static readonly string PodcastsFilename = "podcasts.json";
         private static IList<Podcast> podcasts = new List<Podcast>();
 
-        private static async Task CheckForNewEpisodes(Podcast podcast)
+        public static async Task<IList<Episode>> CheckForNewEpisodes(IEnumerable<Podcast> podcasts)
         {
-            var httpClient = new HttpClient();
-            var xml = await httpClient.GetStringAsync(podcast.FeedUrl);
-            var xmlDocument = XDocument.Parse(xml);
-
-            var elements = xmlDocument.Element("rss").Element("channel").Elements("item");
-            foreach (var element in elements)
+            var result = new List<Episode>();
+            foreach (var podcast in podcasts)
             {
-                var episode = new Episode(element);
-                if (!podcast.Episodes.Any(e => string.Compare(e.Name, episode.Name) == 0))
+                var httpClient = new HttpClient();
+                var xml = await httpClient.GetStringAsync(podcast.FeedUrl);
+                var xmlDocument = XDocument.Parse(xml);
+
+                var elements = xmlDocument.Element("rss").Element("channel").Elements("item");
+                foreach (var element in elements)
                 {
-                    podcast.Episodes.Add(episode);
+                    var episode = new Episode(element, podcast);
+                    if (!podcast.Episodes.Any(e => string.Compare(e.Name, episode.Name) == 0))
+                    {
+                        podcast.Episodes.Insert(0, episode);
+                        result.Add(episode);
+                    }
                 }
             }
+
+            return result.OrderBy(e => e.Published).ToList();
         }
 
         private static async Task<IList<Podcast>> GetPodcastsFromStorageAsync()
@@ -52,23 +59,6 @@ namespace PodcastR.Data.Services
             }
 
             return null;
-        }
-
-        public static async Task<IList<Episode>> GetLatestEpisodesAsync(int numberOfEpisodes)
-        {
-            var podcasts = await GetPodcastsFromStorageAsync();
-            foreach (var podcast in podcasts)
-            {
-                await CheckForNewEpisodes(podcast);
-            }
-
-            IList<Episode> episodes;
-            if (numberOfEpisodes != 0)
-                episodes = podcasts.SelectMany(p => p.Episodes).OrderByDescending(e => e.Published).Take(numberOfEpisodes).ToList();
-            else
-                episodes = podcasts.SelectMany(p => p.Episodes).OrderByDescending(e => e.Published).ToList();
-
-            return episodes;
         }
 
         public static async Task<IList<Podcast>> GetSubscriptions(int numberOfSubscriptions)
@@ -99,6 +89,7 @@ namespace PodcastR.Data.Services
         public static async Task<Podcast> LoadPodcastAsync(Uri url)
         {
             var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.60 Safari/537.36");
             var xml = await httpClient.GetStringAsync(url);
             var xmlDocument = XDocument.Parse(xml);
 
@@ -123,8 +114,7 @@ namespace PodcastR.Data.Services
 
             foreach (var element in elements)
             {
-                var episode = new Episode(element);
-                episode.Podcast = podcast;
+                var episode = new Episode(element, podcast);
                 episodes.Add(episode);
             }
             podcast.Episodes = episodes;

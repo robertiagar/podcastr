@@ -1,7 +1,7 @@
 ﻿<Page
     x:Name="pageRoot"
     x:Class="PodcastR.WindowsStore.HubPage"
-    DataContext="{Binding DefaultViewModel, RelativeSource={RelativeSource Self}}"
+    DataContext="{Binding Main, Source={StaticResource Locator}}"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PodcastR.WindowsStore"
@@ -45,8 +45,40 @@
                 </Border>
             </Grid>
         </DataTemplate>
+        <Flyout x:Key="AddPodcastFlyout">
+            <Grid>
+                <Grid.ChildrenTransitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition/>
+                    </TransitionCollection>
+                </Grid.ChildrenTransitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.ColumnSpan="2" Margin="10"
+                           Style="{StaticResource HeaderTextBlockStyle}"
+                           Text="Add Podcast"/>
+                <TextBox Grid.Row="1" Margin="10"
+                         Text="{Binding FeedUri,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Grid.Row="1" Margin="10"
+                        Grid.Column="1"
+                        Content="Add"
+                        Command="{Binding AddPodcastCommand}"/>
+            </Grid>
+        </Flyout>
     </Page.Resources>
-
+    <Page.BottomAppBar>
+        <AppBar Padding="10,0,10,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <AppBarButton Flyout="{StaticResource AddPodcastFlyout}" Icon="Add" Label="Add Podcast"/>
+            </StackPanel>
+        </AppBar>
+    </Page.BottomAppBar>
     <!--
     This grid acts as a root panel for the page.
   -->
@@ -80,16 +112,17 @@
                     <ImageBrush ImageSource="Assets/MediumGray.png" Stretch="UniformToFill" />
                 </HubSection.Background>
             </HubSection>
-            <HubSection Width="500" x:Uid="Section1Header" Header="Subscriptions" DataContext="{Binding Subscriptions}" IsHeaderInteractive="True">
+            <HubSection x:Uid="Section1Header" Header="Subscriptions" IsHeaderInteractive="True">
                 <DataTemplate>
                     <GridView
                         x:Name="itemGridView"
-                        ItemsSource="{Binding}"
+                        ItemsSource="{Binding Podcasts}"
                         Margin="-9,-14,0,0"
                         AutomationProperties.AutomationId="ItemGridView"
                         AutomationProperties.Name="Items In Group"
                         ItemTemplate="{StaticResource  Standard300x260ItemTemplate}"
-                        SelectionMode="None"
+                        SelectionMode="Single"
+                        SelectedItem="{Binding SelectedPodcast, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                         IsSwipeEnabled="false"
                         IsItemClickEnabled="True"
                         ItemClick="ItemView_ItemClick">

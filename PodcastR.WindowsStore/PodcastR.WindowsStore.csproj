@@ -123,9 +123,7 @@
     <Compile Include="Common\NavigationHelper.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Common\ObservableDictionary.cs" />
-    <Compile Include="ViewModel\EpisodeViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\PodcastViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
   </ItemGroup>
   <ItemGroup>
