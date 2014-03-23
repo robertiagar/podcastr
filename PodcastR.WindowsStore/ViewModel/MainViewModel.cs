@@ -122,5 +122,15 @@ namespace PodcastR.WindowsStore.ViewModel
                 Set<Podcast>(() => SelectedPodcast, ref _SelectedPodcast, value);
             }
         }
+
+        private Episode _NowPlaying;
+        public Episode NowPlaying
+        {
+            get { return _NowPlaying; }
+            set
+            {
+                Set<Episode>(() => NowPlaying, ref _NowPlaying, value);
+            }
+        }
     }
 }

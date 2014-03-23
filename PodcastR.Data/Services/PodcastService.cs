@@ -22,19 +22,26 @@ namespace PodcastR.Data.Services
             var result = new List<Episode>();
             foreach (var podcast in podcasts)
             {
-                var httpClient = new HttpClient();
-                var xml = await httpClient.GetStringAsync(podcast.FeedUrl);
-                var xmlDocument = XDocument.Parse(xml);
-
-                var elements = xmlDocument.Element("rss").Element("channel").Elements("item");
-                foreach (var element in elements)
+                try
                 {
-                    var episode = new Episode(element, podcast);
-                    if (!podcast.Episodes.Any(e => string.Compare(e.Name, episode.Name) == 0))
+                    var httpClient = new HttpClient();
+                    var xml = await httpClient.GetStringAsync(podcast.FeedUrl);
+                    var xmlDocument = XDocument.Parse(xml);
+
+                    var elements = xmlDocument.Element("rss").Element("channel").Elements("item");
+                    foreach (var element in elements)
                     {
-                        podcast.Episodes.Insert(0, episode);
-                        result.Add(episode);
+                        var episode = new Episode(element, podcast);
+                        if (!podcast.Episodes.Any(e => string.Compare(e.Name, episode.Name) == 0))
+                        {
+                            podcast.Episodes.Insert(0, episode);
+                            result.Add(episode);
+                        }
                     }
+                }
+                catch
+                {
+
                 }
             }
 
@@ -88,38 +95,45 @@ namespace PodcastR.Data.Services
 
         public static async Task<Podcast> LoadPodcastAsync(Uri url)
         {
-            var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.60 Safari/537.36");
-            var xml = await httpClient.GetStringAsync(url);
-            var xmlDocument = XDocument.Parse(xml);
-
-            var channelTitle = xmlDocument.Element("rss").Element("channel").Element("title").Value;
-            XNamespace itunes = "http://www.itunes.com/dtds/podcast-1.0.dtd";
-            var elements = xmlDocument.Element("rss").Element("channel").Elements("item");
-            var description = xmlDocument.Element("rss").Element("channel").Element("description").Value;
-            var imageUrl = xmlDocument.Element("rss").Element("channel").Element(itunes + "image").Attribute("href").Value;
-            var author = xmlDocument.Element("rss").Element("channel").Element(itunes + "author").Value;
-
-            var podcast = new Podcast
+            try
             {
-                FeedUrl = url,
-                Name = channelTitle,
-                ImageUrl = new Uri(imageUrl),
-                Author = author,
-                Description = description,
-                DateAdded = DateTime.Now
-            };
+                var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.60 Safari/537.36");
+                var xml = await httpClient.GetStringAsync(url);
+                var xmlDocument = XDocument.Parse(xml);
 
-            var episodes = new List<Episode>();
+                var channelTitle = xmlDocument.Element("rss").Element("channel").Element("title").Value;
+                XNamespace itunes = "http://www.itunes.com/dtds/podcast-1.0.dtd";
+                var elements = xmlDocument.Element("rss").Element("channel").Elements("item");
+                var description = xmlDocument.Element("rss").Element("channel").Element("description").Value;
+                var imageUrl = xmlDocument.Element("rss").Element("channel").Element(itunes + "image").Attribute("href").Value;
+                var author = xmlDocument.Element("rss").Element("channel").Element(itunes + "author").Value;
 
-            foreach (var element in elements)
-            {
-                var episode = new Episode(element, podcast);
-                episodes.Add(episode);
+                var podcast = new Podcast
+                {
+                    FeedUrl = url,
+                    Name = channelTitle,
+                    ImageUrl = new Uri(imageUrl),
+                    Author = author,
+                    Description = description,
+                    DateAdded = DateTime.Now
+                };
+
+                var episodes = new List<Episode>();
+
+                foreach (var element in elements)
+                {
+                    var episode = new Episode(element, podcast);
+                    episodes.Add(episode);
+                }
+                podcast.Episodes = episodes;
+
+                return podcast;
             }
-            podcast.Episodes = episodes;
-
-            return podcast;
+            catch
+            {
+                return null;
+            }
         }
 
         public static async Task SavePodcastsToLocalStorage(IList<Podcast> podcasts)

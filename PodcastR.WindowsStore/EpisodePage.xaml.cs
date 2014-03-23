@@ -17,15 +17,14 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 
-// The Section Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234229
+// The Item Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234232
 
 namespace PodcastR.WindowsStore
 {
     /// <summary>
-    /// A page that displays an overview of a single group, including a preview of the items
-    /// within the group.
+    /// A page that displays details for a single item within a group.
     /// </summary>
-    public sealed partial class SectionPage : Page
+    public sealed partial class EpisodePage : Page
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
@@ -47,8 +46,7 @@ namespace PodcastR.WindowsStore
             get { return this.defaultViewModel; }
         }
 
-
-        public SectionPage()
+        public EpisodePage()
         {
             this.InitializeComponent();
             this.navigationHelper = new NavigationHelper(this);
@@ -69,22 +67,8 @@ namespace PodcastR.WindowsStore
         private async void navigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
-            var group = await SampleDataSource.GetGroupAsync((String)e.NavigationParameter);
-            this.DefaultViewModel["Group"] = group;
-            this.DefaultViewModel["Items"] = group.Items;
-        }
-
-        /// <summary>
-        /// Invoked when an item is clicked.
-        /// </summary>
-        /// <param name="sender">The GridView displaying the item clicked.</param>
-        /// <param name="e">Event data that describes the item clicked.</param>
-        void ItemView_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            // Navigate to the appropriate destination page, configuring the new page
-            // by passing required information as a navigation parameter
-            var itemId = ((SampleDataItem)e.ClickedItem).UniqueId;
-            this.Frame.Navigate(typeof(ItemPage), itemId);
+            var item = await SampleDataSource.GetItemAsync((String)e.NavigationParameter);
+            this.DefaultViewModel["Item"] = item;
         }
 
         #region NavigationHelper registration
@@ -97,6 +81,7 @@ namespace PodcastR.WindowsStore
         /// and <see cref="GridCS.Common.NavigationHelper.SaveState"/>.
         /// The navigation parameter is available in the LoadState method 
         /// in addition to page state preserved during an earlier session.
+
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {

@@ -87,6 +87,7 @@ namespace PodcastR.WindowsStore.Common
                     Window.Current.CoreWindow.PointerPressed +=
                         this.CoreWindow_PointerPressed;
                 }
+                App.SetUpBackgroundAudio();
             };
 
             // Undo the same changes when the page is no longer visible

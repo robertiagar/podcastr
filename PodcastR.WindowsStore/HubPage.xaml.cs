@@ -77,6 +77,7 @@ namespace PodcastR.WindowsStore
             this.DataContext = viewModel;
             await viewModel.LoadNewEpisodesAsync();
             await viewModel.SavePodcastsAsync();
+            
             //var episode = await PodcastR.Data.Services.PodcastDownloaderService.DownloadPodcastEpisodeAsync(podcastsFromLocal[0].Episodes[2], p =>
             //{
             //    if (p.Progress.TotalBytesToReceive > 0)
@@ -102,7 +103,7 @@ namespace PodcastR.WindowsStore
         {
             HubSection section = e.Section;
             var group = section.DataContext;
-            this.Frame.Navigate(typeof(SectionPage), ((SampleDataGroup)group).UniqueId);
+            this.Frame.Navigate(typeof(PodcastPage), ((SampleDataGroup)group).UniqueId);
         }
 
         /// <summary>
@@ -115,8 +116,19 @@ namespace PodcastR.WindowsStore
         {
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
-            var itemId = ((SampleDataItem)e.ClickedItem).UniqueId;
-            this.Frame.Navigate(typeof(ItemPage), itemId);
+            var podcast = e.ClickedItem as Podcast;
+            var episode = e.ClickedItem as Episode;
+            if (podcast != null)
+                this.Frame.Navigate(typeof(PodcastPage), podcast);
+            if (episode != null)
+            {
+                //this.Frame.Navigate(typeof(EpisodePage), episode);
+                var viewModel = (MainViewModel)this.DataContext;
+                viewModel.NowPlaying = episode;
+                App.UpdateSystemControls(episode);
+                App.Player.Source = episode.Path;
+                App.Player.Play();
+            }
         }
 
         #region NavigationHelper registration
