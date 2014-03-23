@@ -25,6 +25,8 @@ namespace PodcastR.Data.Entities
             IsLocal = false;
             Published = element.Element("pubDate").Value.ToDateTime();
             ImageUrl = element.Element(itunes + "image") != null ? new Uri(element.Element(itunes + "image").Attribute("href").Value) : podcast.ImageUrl;
+            Summary = element.Element(itunes + "summary") != null ? element.Element(itunes + "summary").Value : null;
+            Description = element.Element("description") != null ? element.Element("description").Value : null;
             Podcast = podcast;
         }
 
@@ -34,6 +36,8 @@ namespace PodcastR.Data.Entities
         public string Author { get; set; }
         public DateTime Published { get; set; }
         public Uri ImageUrl { get; set; }
+        public string Summary { get; set; }
+        public string Description { get; set; }
 
         [JsonIgnore]
         public virtual Podcast Podcast { get; set; }
