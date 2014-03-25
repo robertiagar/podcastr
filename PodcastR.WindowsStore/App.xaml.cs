@@ -43,6 +43,7 @@ namespace PodcastR.WindowsStore
             this.Suspending += OnSuspending;
         }
         public static MediaElement Player { get; set; }
+        public static IList<Episode> Playlist { get; set; }
 
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
@@ -129,19 +130,26 @@ namespace PodcastR.WindowsStore
 
         public static void SetUpBackgroundAudio()
         {
-            var rootGrid = VisualTreeHelper.GetChild(Window.Current.Content, 0);
-            App.Player = (MediaElement)VisualTreeHelper.GetChild(rootGrid, 0);
+            if (Player == null)
+            {
+                var rootGrid = VisualTreeHelper.GetChild(Window.Current.Content, 0);
+                App.Player = (MediaElement)VisualTreeHelper.GetChild(rootGrid, 0);
+                App.Playlist = new List<Episode>();
+                systemControls = SystemMediaTransportControls.GetForCurrentView();
+                systemControls.IsPlayEnabled = true;
+                systemControls.IsPauseEnabled = true;
+                systemControls.IsStopEnabled = true;
+                systemControls.IsEnabled = true;
+                systemControls.DisplayUpdater.Type = MediaPlaybackType.Music;
+                systemControls.ButtonPressed += systemControls_ButtonPressed;
+                displayRequestManager = new DisplayRequest();
+            }
+        }
 
-            systemControls = SystemMediaTransportControls.GetForCurrentView();
-            systemControls.IsPlayEnabled = true;
-            systemControls.IsPauseEnabled = true;
-            systemControls.IsStopEnabled = true;
-            systemControls.IsEnabled = true;
-            systemControls.IsNextEnabled = true;
-            systemControls.IsPreviousEnabled = true;
-            systemControls.DisplayUpdater.Type = MediaPlaybackType.Music;
-            systemControls.ButtonPressed += systemControls_ButtonPressed;
-            displayRequestManager = new DisplayRequest();
+        public static void UpdatePreviosNextButtons()
+        {
+            systemControls.IsNextEnabled = Playlist.Any();
+            systemControls.IsPreviousEnabled = Playlist.Any();
         }
 
         private static async void systemControls_ButtonPressed(SystemMediaTransportControls sender, SystemMediaTransportControlsButtonPressedEventArgs args)
@@ -156,12 +164,14 @@ namespace PodcastR.WindowsStore
                     {
                         Player.Pause();
                         systemControls.PlaybackStatus = MediaPlaybackStatus.Paused;
+                        displayRequestManager.RequestRelease();
                     });
                     break;
                 case SystemMediaTransportControlsButton.Play:
                     await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, ()=>{
                         Player.Play();
                         systemControls.PlaybackStatus= MediaPlaybackStatus.Playing;
+                        displayRequestManager.RequestActive();
                     });
                     break;
                 case SystemMediaTransportControlsButton.Previous:

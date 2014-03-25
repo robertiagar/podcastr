@@ -1,4 +1,6 @@
-﻿using PodcastR.WindowsStore.Common;
+﻿using PodcastR.Data.Entities;
+using PodcastR.Data.Services;
+using PodcastR.WindowsStore.Common;
 using PodcastR.WindowsStore.Data;
 using System;
 using System.Collections.Generic;
@@ -66,12 +68,10 @@ namespace PodcastR.WindowsStore
         /// <see cref="Frame.Navigate(Type, Object)"/> when this page was initially requested and
         /// a dictionary of state preserved by this page during an earlier
         /// session.  The state will be null the first time a page is visited.</param>
-        private async void navigationHelper_LoadState(object sender, LoadStateEventArgs e)
+        private void navigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            // TODO: Create an appropriate data model for your problem domain to replace the sample data
-            var group = await SampleDataSource.GetGroupAsync((String)e.NavigationParameter);
-            this.DefaultViewModel["Group"] = group;
-            this.DefaultViewModel["Items"] = group.Items;
+            this.DefaultViewModel["Podcast"] = (Podcast)e.NavigationParameter;
+            this.DefaultViewModel["Episodes"] = ((Podcast)e.NavigationParameter).Episodes;
         }
 
         /// <summary>
@@ -83,8 +83,8 @@ namespace PodcastR.WindowsStore
         {
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
-            var itemId = ((SampleDataItem)e.ClickedItem).UniqueId;
-            this.Frame.Navigate(typeof(EpisodePage), itemId);
+            var episode = (Episode)e.ClickedItem;
+            this.Frame.Navigate(typeof(EpisodePage), episode);
         }
 
         #region NavigationHelper registration

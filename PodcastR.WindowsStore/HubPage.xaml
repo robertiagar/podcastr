@@ -14,41 +14,37 @@
 
     <Page.Resources>
         <CollectionViewSource x:Name="PodcastsViewSource" Source="{Binding Podcasts}">
-            
+
         </CollectionViewSource>
-        <!-- Grid-appropriate 310 by 260 pixel item template as seen in section 4 -->
-        <DataTemplate x:Key="Standard310x260ItemTemplate">
-            <Grid Height="250" Width="310" Margin="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}" Height="150">
-                    <Image Source="{Binding Podcast.ImageUrl}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Name}"/>
+        <DataTemplate x:Key="EpisodeTemplate">
+            <Grid Height="100" Width="500" Margin="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="400"/>
+                </Grid.ColumnDefinitions>
+                <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}" Height="100">
+                    <Image Source="{Binding ImageUrl}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Name}"/>
                 </Border>
-                <StackPanel Grid.Row="1" Margin="0,10,0,0">
-                    <TextBlock Text="{Binding Name}" Style="{StaticResource TitleTextBlockStyle}" TextWrapping="NoWrap"/>
+                <StackPanel Grid.Column="1" Margin="5">
+                    <TextBlock Text="{Binding Name}" Style="{StaticResource TitleTextBlockStyle}" TextWrapping="WrapWholeWords"/>
                     <TextBlock Text="{Binding Author}" Style="{StaticResource BodyTextBlockStyle}" MaxHeight="60" />
                     <TextBlock Text="{Binding Published}" Style="{StaticResource BodyTextBlockStyle}" MaxHeight="60"/>
                 </StackPanel>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Key="Standard300x260ItemTemplate">
-            <Grid Height="300" Width="250" Margin="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}" Height="250">
-                    <Image Source="{Binding ImageUrl}" Stretch="Fill" AutomationProperties.Name="{Binding Name}"/>
-                </Border>
-                <Border Grid.Row="1">
-                    <StackPanel Margin="10">
-                        <TextBlock Text="{Binding Name}" Style="{StaticResource TitleTextBlockStyle}" TextWrapping="NoWrap"/>
+        <DataTemplate x:Key="PodcastTemplate">
+            <Grid Height="175" Width="175" Margin="0">
+                <Grid.Background>
+                    <ImageBrush ImageSource="{Binding ImageUrl}" Stretch="Fill" AutomationProperties.Name="{Binding Name}"/>
+                </Grid.Background>
+                <StackPanel VerticalAlignment="Bottom" Background="Black" Opacity=".75">
+                    <StackPanel Margin="5">
+                        <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="Light"  TextWrapping="NoWrap"/>
                     </StackPanel>
-                </Border>
+                </StackPanel>
             </Grid>
         </DataTemplate>
+
         <Flyout x:Key="AddPodcastFlyout">
             <Grid>
                 <Grid.ChildrenTransitions>
@@ -80,6 +76,7 @@
         <AppBar Padding="10,0,10,0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                 <AppBarButton Flyout="{StaticResource AddPodcastFlyout}" Icon="Add" Label="Add Podcast"/>
+                <AppBarButton Icon="Clear" Label="Clear" Command="{Binding ClearPodcastsCommand}"/>
             </StackPanel>
         </AppBar>
     </Page.BottomAppBar>
@@ -96,41 +93,31 @@
             <Hub.Header>
                 <!-- Back button and page title -->
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="80"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Button  x:Name="backButton" Style="{StaticResource NavigationBackButtonNormalStyle}"
-                        Margin="-1,-1,39,0" 
-                        VerticalAlignment="Top"
-                        Command="{Binding NavigationHelper.GoBackCommand, ElementName=pageRoot}"
-                        AutomationProperties.Name="Back"
-                        AutomationProperties.AutomationId="BackButton"
-                        AutomationProperties.ItemType="Navigation Button"/>
-                    <TextBlock x:Name="pageTitle" Text="{StaticResource AppName}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" 
-                        VerticalAlignment="Top" IsHitTestVisible="false" TextWrapping="NoWrap" />
+                    <TextBlock x:Name="pageTitle" Text="{StaticResource AppName}" Style="{StaticResource HeaderTextBlockStyle}" 
+                               VerticalAlignment="Top" IsHitTestVisible="false" TextWrapping="NoWrap" />
                 </Grid>
             </Hub.Header>
-            <HubSection Width="780" Header="Now Playing" DataContext="{Binding NowPlaying}">
+            <HubSection Width="850" DataContext="{Binding NowPlaying}" 
+                        VerticalContentAlignment="Center" 
+                        HorizontalAlignment="Center">
+                <HubSection.Background>
+                    <ImageBrush ImageSource="{Binding ImageUrl}" Stretch="UniformToFill"/>
+                </HubSection.Background>
                 <DataTemplate>
-                    <Grid Margin="-9,-14,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Image Grid.Row="0"
-                               Height="700"
-                               Width="700"
-                               Margin="5"
-                               Source="{Binding ImageUrl}" Stretch="Fill"/>
-                        <TextBlock Grid.Row="1" Margin="10,0,10,0"
-                                   Style="{StaticResource SubheaderTextBlockStyle}"
-                                   Text="{Binding Name}"/>
-                        <TextBlock Grid.Row="2" Margin="10,0,10,0"
-                                   Style="{StaticResource SubtitleTextBlockStyle}"
-                                   Text="{Binding Podcast.Name}"/>
+                    <Grid>
+                        <StackPanel Background="{StaticResource ApplicationPageBackgroundThemeBrush}" 
+                                    Opacity=".85" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Margin="10"                          
+                                       Style="{StaticResource HeaderTextBlockStyle}"
+                                       Text="{Binding Name}"
+                                       TextAlignment="Center"
+                                       TextWrapping="WrapWholeWords"/>
+                            <TextBlock Margin="10"
+                                       Style="{StaticResource SubheaderTextBlockStyle}"
+                                       Text="{Binding Author}"
+                                       TextAlignment="Center"
+                                       TextWrapping="WrapWholeWords"/>
+                        </StackPanel>
                     </Grid>
                 </DataTemplate>
             </HubSection>
@@ -142,12 +129,17 @@
                         Margin="-9,-14,0,0"
                         AutomationProperties.AutomationId="ItemGridView"
                         AutomationProperties.Name="Items In Group"
-                        ItemTemplate="{StaticResource  Standard300x260ItemTemplate}"
+                        ItemTemplate="{StaticResource PodcastTemplate}"
                         SelectionMode="Single"
                         SelectedItem="{Binding SelectedPodcast, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                         IsSwipeEnabled="false"
                         IsItemClickEnabled="True"
                         ItemClick="ItemView_ItemClick">
+                        <GridView.ItemContainerTransitions>
+                            <TransitionCollection>
+                                <EntranceThemeTransition/>
+                            </TransitionCollection>
+                        </GridView.ItemContainerTransitions>
                     </GridView>
                 </DataTemplate>
             </HubSection>
@@ -160,11 +152,16 @@
                         Margin="-9,-14,0,0"
                         AutomationProperties.AutomationId="ItemGridView"
                         AutomationProperties.Name="Items In Group"
-                        ItemTemplate="{StaticResource Standard310x260ItemTemplate}"
+                        ItemTemplate="{StaticResource EpisodeTemplate}"
                         SelectionMode="None"
                         IsSwipeEnabled="false"
                         IsItemClickEnabled="True"
                         ItemClick="ItemView_ItemClick">
+                        <GridView.ItemContainerTransitions>
+                            <TransitionCollection>
+                                <EntranceThemeTransition/>
+                            </TransitionCollection>
+                        </GridView.ItemContainerTransitions>
                     </GridView>
                 </DataTemplate>
             </HubSection>

@@ -71,13 +71,14 @@ namespace PodcastR.WindowsStore
         /// session.  The state will be null the first time a page is visited.</param>
         private async void navigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            // TODO: Create an appropriate data model for your problem domain to replace the sample data
-            var viewModel = new MainViewModel();
-            await viewModel.LoadPodcastsAsync();
-            this.DataContext = viewModel;
-            await viewModel.LoadNewEpisodesAsync();
-            await viewModel.SavePodcastsAsync();
-            
+            var viewModel = (MainViewModel)this.DataContext;
+            if (this.DataContext != null && !viewModel.Podcasts.Any())
+            {
+                await viewModel.LoadPodcastsAsync();
+                await viewModel.LoadNewEpisodesAsync();
+                await viewModel.SavePodcastsAsync();
+            }
+
             //var episode = await PodcastR.Data.Services.PodcastDownloaderService.DownloadPodcastEpisodeAsync(podcastsFromLocal[0].Episodes[2], p =>
             //{
             //    if (p.Progress.TotalBytesToReceive > 0)
@@ -125,9 +126,7 @@ namespace PodcastR.WindowsStore
                 //this.Frame.Navigate(typeof(EpisodePage), episode);
                 var viewModel = (MainViewModel)this.DataContext;
                 viewModel.NowPlaying = episode;
-                App.UpdateSystemControls(episode);
-                App.Player.Source = episode.Path;
-                App.Player.Play();
+                App.Player.Play(episode);
             }
         }
 

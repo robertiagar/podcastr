@@ -17,8 +17,7 @@
         * Row 1 contains the rest of the page layout
     -->
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-        DataContext="{Binding Item}"
-        d:DataContext="{Binding Groups[0].Items[0], Source={d:DesignData Source=/DataModel/SampleData.json, Type=data:SampleDataSource}}">
+        DataContext="{Binding Episode}">
         <Grid.ChildrenTransitions>
             <TransitionCollection>
                 <EntranceThemeTransition/>
@@ -33,7 +32,22 @@
             TODO: Content should be placed within the following grid 
                   to show details for the current item
         -->
-        <Grid Grid.Row="1" x:Name="contentRegion"/>
+        <Grid Grid.Row="1" x:Name="contentRegion" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="553"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Image Source="{Binding ImageUrl}" 
+                   Stretch="UniformToFill" 
+                   Width="500" Height="500"
+                   VerticalAlignment="Top"
+                   Margin="39,4,14,0" AutomationProperties.Name="{Binding Name}"/>
+            <Grid Grid.Column="1">
+                <StackPanel>
+                    <TextBlock Margin="10" Text="{Binding Summary}" Style="{StaticResource BodyTextBlockStyle}" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
 
         <!-- Back button and page title -->
         <Grid>
@@ -47,7 +61,7 @@
                         AutomationProperties.Name="Back"
                         AutomationProperties.AutomationId="BackButton"
                         AutomationProperties.ItemType="Navigation Button"/>
-            <TextBlock x:Name="pageTitle" Text="{Binding Title}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" 
+            <TextBlock x:Name="pageTitle" Text="{Binding Name}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" 
                         IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,30,40"/>
         </Grid>
     </Grid>

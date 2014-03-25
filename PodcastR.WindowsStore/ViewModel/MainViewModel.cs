@@ -1,6 +1,7 @@
 using GalaSoft.MvvmLight;
 using PodcastR.Data.Entities;
 using PodcastR.Data.Services;
+using PodcastR.Data.Extensions;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -43,6 +44,7 @@ namespace PodcastR.WindowsStore.ViewModel
             this._podcasts = new ObservableCollection<Podcast>();
             this._episodes = new ObservableCollection<Episode>();
             this.AddPodcastCommand = new RelayCommand(async () => await AddPodcastAsync());
+            this.ClearPodcastsCommand = new RelayCommand(async () => { ClearPodcasts(); await SavePodcastsAsync(); });
         }
         public IList<Podcast> Podcasts
         {
@@ -55,19 +57,14 @@ namespace PodcastR.WindowsStore.ViewModel
         }
 
         public ICommand AddPodcastCommand { get; private set; }
+        public ICommand ClearPodcastsCommand { get; private set; }
 
         public async Task LoadPodcastsAsync()
         {
-            var podcasts = await PodcastService.GetSubscriptions(6);
-            var episodes = podcasts.SelectMany(p => p.Episodes).OrderByDescending(e => e.Published).Take(12).ToList();
-            foreach (var podcast in podcasts)
-            {
-                _podcasts.Add(podcast);
-            }
-            foreach (var episode in episodes)
-            {
-                _episodes.Add(episode);
-            }
+            _podcasts = (await PodcastService.GetSubscriptions(6)).ToObservable();
+            _episodes = _podcasts.SelectMany(p => p.Episodes).OrderByDescending(e => e.Published).Take(12).ToObservable();
+            this.RaisePropertyChanged(() => Podcasts);
+            this.RaisePropertyChanged(() => Episodes);
         }
 
         public async Task LoadNewEpisodesAsync()
@@ -86,9 +83,13 @@ namespace PodcastR.WindowsStore.ViewModel
         {
             var podcast = await PodcastService.LoadPodcastAsync(FeedUri);
             _podcasts.Add(podcast);
-            foreach (var episode in podcast.Episodes.Take(5))
+            foreach (var episode in podcast.Episodes.Take(5).ToList())
             {
-                _episodes.Insert(0, episode);
+                int i = 0;
+                while (i != _episodes.Count && _episodes[i].Published < episode.Published)
+                    i++;
+
+                _episodes.Insert(i, episode);
             }
             await SavePodcastsAsync();
         }

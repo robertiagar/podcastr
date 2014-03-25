@@ -126,7 +126,7 @@ namespace PodcastR.Data.Services
                     var episode = new Episode(element, podcast);
                     episodes.Add(episode);
                 }
-                podcast.Episodes = episodes;
+                podcast.Episodes = episodes.OrderByDescending(episode => episode.Published).ToList();
 
                 return podcast;
             }
