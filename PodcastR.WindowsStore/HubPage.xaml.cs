@@ -152,5 +152,14 @@ namespace PodcastR.WindowsStore
         }
 
         #endregion
+
+        private void itemGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var context = (MainViewModel)this.DataContext;
+            if (context.SelectedEpisode != null)
+                context.IsOpen = true;
+            else
+                context.IsOpen = false;
+        }
     }
 }

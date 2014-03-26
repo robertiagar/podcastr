@@ -16,22 +16,7 @@
         <CollectionViewSource x:Name="PodcastsViewSource" Source="{Binding Podcasts}">
 
         </CollectionViewSource>
-        <DataTemplate x:Key="EpisodeTemplate">
-            <Grid Height="100" Width="500" Margin="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="400"/>
-                </Grid.ColumnDefinitions>
-                <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}" Height="100">
-                    <Image Source="{Binding ImageUrl}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Name}"/>
-                </Border>
-                <StackPanel Grid.Column="1" Margin="5">
-                    <TextBlock Text="{Binding Name}" Style="{StaticResource TitleTextBlockStyle}" TextWrapping="WrapWholeWords"/>
-                    <TextBlock Text="{Binding Author}" Style="{StaticResource BodyTextBlockStyle}" MaxHeight="60" />
-                    <TextBlock Text="{Binding Published}" Style="{StaticResource BodyTextBlockStyle}" MaxHeight="60"/>
-                </StackPanel>
-            </Grid>
-        </DataTemplate>
+       
         <DataTemplate x:Key="PodcastTemplate">
             <Grid Height="175" Width="175" Margin="0">
                 <Grid.Background>
@@ -73,12 +58,13 @@
         </Flyout>
     </Page.Resources>
     <Page.BottomAppBar>
-        <AppBar Padding="10,0,10,0">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+        <CommandBar Padding="10,0,10,0" IsSticky="True" IsOpen="{Binding IsOpen}">
+            <AppBarButton Command="{Binding AddToPlaylistCommand}" Icon="Add" Label="Add To Playlist"/>
+            <AppBarButton Icon="List" Label="Playlist" Command="{Binding ShowPlaylistFlyoutCommand}"/>
+            <CommandBar.SecondaryCommands>
                 <AppBarButton Flyout="{StaticResource AddPodcastFlyout}" Icon="Add" Label="Add Podcast"/>
-                <AppBarButton Icon="Clear" Label="Clear" Command="{Binding ClearPodcastsCommand}"/>
-            </StackPanel>
-        </AppBar>
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
     </Page.BottomAppBar>
     <!--
     This grid acts as a root panel for the page.
@@ -130,8 +116,7 @@
                         AutomationProperties.AutomationId="ItemGridView"
                         AutomationProperties.Name="Items In Group"
                         ItemTemplate="{StaticResource PodcastTemplate}"
-                        SelectionMode="Single"
-                        SelectedItem="{Binding SelectedPodcast, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        SelectionMode="None"                        
                         IsSwipeEnabled="false"
                         IsItemClickEnabled="True"
                         ItemClick="ItemView_ItemClick">
@@ -143,20 +128,21 @@
                     </GridView>
                 </DataTemplate>
             </HubSection>
-            <HubSection DataContext="{Binding Episodes}"
-                        x:Uid="Section3Header" Header="Episodes" Padding="40,40,40,32">
+            <HubSection x:Uid="Section3Header" Header="Episodes" Padding="40,40,40,32">
                 <DataTemplate>
                     <GridView
                         x:Name="itemGridView"
-                        ItemsSource="{Binding}"
+                        ItemsSource="{Binding Episodes}"
                         Margin="-9,-14,0,0"
                         AutomationProperties.AutomationId="ItemGridView"
                         AutomationProperties.Name="Items In Group"
                         ItemTemplate="{StaticResource EpisodeTemplate}"
-                        SelectionMode="None"
-                        IsSwipeEnabled="false"
+                        SelectionMode="Single"
+                        SelectedItem="{Binding SelectedEpisode, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        IsSwipeEnabled="True"
                         IsItemClickEnabled="True"
-                        ItemClick="ItemView_ItemClick">
+                        ItemClick="ItemView_ItemClick"
+                        SelectionChanged="itemGridView_SelectionChanged">
                         <GridView.ItemContainerTransitions>
                             <TransitionCollection>
                                 <EntranceThemeTransition/>

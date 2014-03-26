@@ -44,6 +44,7 @@ namespace PodcastR.WindowsStore
         }
         public static MediaElement Player { get; set; }
         public static IList<Episode> Playlist { get; set; }
+        public static int Position { get; set; }
 
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
@@ -158,23 +159,44 @@ namespace PodcastR.WindowsStore
             switch (args.Button)
             {
                 case SystemMediaTransportControlsButton.Next:
+                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        if (Position + 1 >= Playlist.Count)
+                        {
+                            Player.Play(Playlist[0]);
+                        }
+                        else
+                        {
+                            Player.Play(Playlist[Position + 1]);
+                        }
+                    });
                     break;
                 case SystemMediaTransportControlsButton.Pause:
                     await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                     {
                         Player.Pause();
                         systemControls.PlaybackStatus = MediaPlaybackStatus.Paused;
-                        displayRequestManager.RequestRelease();
                     });
                     break;
                 case SystemMediaTransportControlsButton.Play:
-                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, ()=>{
+                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
                         Player.Play();
-                        systemControls.PlaybackStatus= MediaPlaybackStatus.Playing;
-                        displayRequestManager.RequestActive();
+                        systemControls.PlaybackStatus = MediaPlaybackStatus.Playing;
                     });
                     break;
                 case SystemMediaTransportControlsButton.Previous:
+                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        if (Position == 0)
+                        {
+                            Player.Play(Playlist[Playlist.Count - 1]);
+                        }
+                        else
+                        {
+                            Player.Play(Playlist[Position - 1]);
+                        }
+                    });
                     break;
                 case SystemMediaTransportControlsButton.Stop:
                     break;
