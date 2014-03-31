@@ -1,4 +1,5 @@
-﻿using PodcastR.Data.Entities;
+﻿using Microsoft.Practices.ServiceLocation;
+using PodcastR.Data.Entities;
 using PodcastR.WindowsStore.Common;
 using PodcastR.WindowsStore.ViewModel;
 using System;
@@ -20,7 +21,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace PodcastR.WindowsStore.Flyouts
 {
-    public sealed partial class PlaylistFlyout : SettingsFlyout
+    public sealed partial class DownloadsFlyout : SettingsFlyout
     {
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
         public ObservableDictionary DefaultViewModel
@@ -28,14 +29,14 @@ namespace PodcastR.WindowsStore.Flyouts
             get { return this.defaultViewModel; }
         }
 
-        public PlaylistFlyout()
+        public DownloadsFlyout()
         {
             this.InitializeComponent();
         }
 
         private void SettingsFlyout_Loaded(object sender, RoutedEventArgs e)
         {
-            this.DefaultViewModel["Playlist"] = App.Playlist;
+            this.DefaultViewModel["Downloads"] = ServiceLocator.Current.GetInstance<MainViewModel>().Downloads;
         }
 
         private void ListView_ItemClick(object sender, ItemClickEventArgs e)

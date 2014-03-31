@@ -16,7 +16,7 @@
         <CollectionViewSource x:Name="PodcastsViewSource" Source="{Binding Podcasts}">
 
         </CollectionViewSource>
-       
+
         <DataTemplate x:Key="PodcastTemplate">
             <Grid Height="175" Width="175" Margin="0">
                 <Grid.Background>
@@ -59,10 +59,13 @@
     </Page.Resources>
     <Page.BottomAppBar>
         <CommandBar Padding="10,0,10,0" IsSticky="True" IsOpen="{Binding IsOpen}">
-            <AppBarButton Command="{Binding AddToPlaylistCommand}" Icon="Add" Label="Add To Playlist"/>
+            <AppBarButton Icon="Add" Label="Add To Playlist" Command="{Binding AddToPlaylistCommand}"/>
             <AppBarButton Icon="List" Label="Playlist" Command="{Binding ShowPlaylistFlyoutCommand}"/>
+            <AppBarButton Icon="Download" Label="Download" Command="{Binding AddToDownloadsCommand}"/>
+            <AppBarButton Icon="Manage" Label="Downloads" Command="{Binding ShowDownloadsFlyoutCommand}"/>
             <CommandBar.SecondaryCommands>
                 <AppBarButton Flyout="{StaticResource AddPodcastFlyout}" Icon="Add" Label="Add Podcast"/>
+                <AppBarButton Icon="Clear" Label="Clear" Command="{Binding ClearPodcastsCommand}"/>
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>

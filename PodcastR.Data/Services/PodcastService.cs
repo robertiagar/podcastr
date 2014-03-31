@@ -20,7 +20,7 @@ namespace PodcastR.Data.Services
         public static async Task<IList<Episode>> CheckForNewEpisodes(IEnumerable<Podcast> podcasts)
         {
             var result = new List<Episode>();
-            foreach (var podcast in podcasts)
+            foreach (var podcast in podcasts.ToList())
             {
                 try
                 {
@@ -55,14 +55,17 @@ namespace PodcastR.Data.Services
             {
                 var podcastsJson = await FileIO.ReadTextAsync(file);
                 var podcasts = JsonConvert.DeserializeObject<IList<Podcast>>(podcastsJson);
-                foreach (var podcast in podcasts)
+                if (podcasts != null)
                 {
-                    foreach (var episode in podcast.Episodes)
+                    foreach (var podcast in podcasts)
                     {
-                        episode.Podcast = podcast;
+                        foreach (var episode in podcast.Episodes)
+                        {
+                            episode.Podcast = podcast;
+                        }
                     }
+                    return podcasts;
                 }
-                return podcasts;
             }
 
             return null;
@@ -71,13 +74,14 @@ namespace PodcastR.Data.Services
         public static async Task<IList<Podcast>> GetSubscriptions(int numberOfSubscriptions)
         {
             var podcasts = await GetPodcastsFromStorageAsync();
-
             IList<Podcast> result = null;
-            if (numberOfSubscriptions != 0)
-                result = podcasts.OrderByDescending(p => p.DateAdded).Take(numberOfSubscriptions).ToList();
-            else
-                result = podcasts.OrderByDescending(p => p.DateAdded).ToList();
-
+            if (podcasts != null)
+            {
+                if (numberOfSubscriptions != 0)
+                    result = podcasts.OrderByDescending(p => p.DateAdded).Take(numberOfSubscriptions).ToList();
+                else
+                    result = podcasts.OrderByDescending(p => p.DateAdded).ToList();
+            }
             return result;
         }
 

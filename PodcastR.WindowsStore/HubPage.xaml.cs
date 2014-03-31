@@ -118,14 +118,14 @@ namespace PodcastR.WindowsStore
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
             var podcast = e.ClickedItem as Podcast;
-            var episode = e.ClickedItem as Episode;
+            var episode = e.ClickedItem as EpisodeViewModel;
             if (podcast != null)
                 this.Frame.Navigate(typeof(PodcastPage), podcast);
             if (episode != null)
             {
                 //this.Frame.Navigate(typeof(EpisodePage), episode);
                 var viewModel = (MainViewModel)this.DataContext;
-                viewModel.NowPlaying = episode;
+                viewModel.NowPlaying = episode.Episode;
                 App.Player.Play(episode);
             }
         }

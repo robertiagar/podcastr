@@ -109,7 +109,12 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\MediaElementExtensions.cs" />
+    <Compile Include="Converters\BackgroundTransferStatusToStringConverter.cs" />
     <Compile Include="Converters\ObjectToVisibilityConverter.cs" />
+    <Compile Include="Converters\UlongToDoubleConverter.cs" />
+    <Compile Include="Flyouts\DownloadsFlyout.xaml.cs">
+      <DependentUpon>DownloadsFlyout.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Flyouts\PlaylistFlyout.xaml.cs">
       <DependentUpon>PlaylistFlyout.xaml</DependentUpon>
     </Compile>
@@ -128,6 +133,7 @@
     <Compile Include="Common\NavigationHelper.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Common\ObservableDictionary.cs" />
+    <Compile Include="ViewModel\EpisodeViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\StickyAppBarViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
@@ -160,6 +166,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Flyouts\DownloadsFlyout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Flyouts\PlaylistFlyout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

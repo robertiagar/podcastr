@@ -27,7 +27,8 @@ namespace PodcastR.WindowsStore.ViewModel
     public class MainViewModel : StickyAppBarViewModel
     {
         private ObservableCollection<Podcast> _podcasts;
-        private ObservableCollection<Episode> _episodes;
+        private ObservableCollection<EpisodeViewModel> _episodes;
+        private ObservableCollection<EpisodeViewModel> _downloads;
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -43,42 +44,54 @@ namespace PodcastR.WindowsStore.ViewModel
             ////    // Code runs "for real"
             ////}
             this._podcasts = new ObservableCollection<Podcast>();
-            this._episodes = new ObservableCollection<Episode>();
+            this._episodes = new ObservableCollection<EpisodeViewModel>();
+            this._downloads = new ObservableCollection<EpisodeViewModel>();
             this.AddPodcastCommand = new RelayCommand(async () => await AddPodcastAsync());
             this.ClearPodcastsCommand = new RelayCommand(async () => { ClearPodcasts(); await SavePodcastsAsync(); });
             this.AddToPlaylistCommand = new RelayCommand(() => AddToPlaylist(), () => CanAddToPlaylist());
+            this.AddToDownloadsCommand = new RelayCommand(async () => await AddToDownloads(), () => CanAddToDownloadlist());
             this.ShowPlaylistFlyoutCommand = new RelayCommand(() => ShowPlaylist());
+            this.ShowDownloadsFlyoutCommand = new RelayCommand(() => ShowDownloads());
         }
-
 
         public IList<Podcast> Podcasts
         {
             get { return _podcasts; }
         }
 
-        public IList<Episode> Episodes
+        public IList<EpisodeViewModel> Episodes
         {
             get { return _episodes; }
+        }
+
+        public IList<EpisodeViewModel> Downloads
+        {
+            get { return _downloads; }
         }
 
         public ICommand AddPodcastCommand { get; private set; }
         public ICommand ClearPodcastsCommand { get; private set; }
         public ICommand AddToPlaylistCommand { get; private set; }
+        public ICommand AddToDownloadsCommand { get; private set; }
         public ICommand ShowPlaylistFlyoutCommand { get; private set; }
+        public ICommand ShowDownloadsFlyoutCommand { get; private set; }
 
         public async Task LoadPodcastsAsync()
         {
             var podcasts = (await PodcastService.GetSubscriptions(6));
-            var episodes = podcasts.SelectMany(p => p.Episodes).OrderByDescending(e => e.Published).Take(12);
-
-            foreach (var podcast in podcasts)
+            if (podcasts != null)
             {
-                _podcasts.Add(podcast);
-            }
+                var episodes = podcasts.SelectMany(p => p.Episodes).OrderByDescending(e => e.Published).Take(12);
 
-            foreach (var episode in episodes)
-            {
-                _episodes.Add(episode);
+                foreach (var podcast in podcasts)
+                {
+                    _podcasts.Add(podcast);
+                }
+
+                foreach (var episode in episodes)
+                {
+                    _episodes.Add(new EpisodeViewModel(episode));
+                }
             }
         }
 
@@ -86,8 +99,9 @@ namespace PodcastR.WindowsStore.ViewModel
         {
             var episodes = _episodes.ToList();
             var newEpisodes = await PodcastService.CheckForNewEpisodes(_podcasts);
-            episodes.AddRange(newEpisodes);
-            foreach (var episode in episodes.OrderBy(e => e.Published))
+            episodes.AddRange(from episode in newEpisodes
+                              select new EpisodeViewModel(episode));
+            foreach (var episode in episodes.OrderBy(e => e.Episode.Published))
             {
                 if (!_episodes.Contains(episode))
                     _episodes.Insert(0, episode);
@@ -98,13 +112,13 @@ namespace PodcastR.WindowsStore.ViewModel
         {
             var podcast = await PodcastService.LoadPodcastAsync(FeedUri);
             _podcasts.Add(podcast);
-            foreach (var episode in podcast.Episodes.Take(5).ToList())
+            foreach (var episode in podcast.Episodes.Take(5).OrderBy(e => e.Published).ToList())
             {
                 int i = 0;
-                while (i != _episodes.Count && _episodes[i].Published < episode.Published)
+                while (i != _episodes.Count && _episodes[i].Episode.Published < episode.Published)
                     i++;
 
-                _episodes.Insert(i, episode);
+                _episodes.Insert(i, new EpisodeViewModel(episode));
             }
             await SavePodcastsAsync();
         }
@@ -129,14 +143,15 @@ namespace PodcastR.WindowsStore.ViewModel
             }
         }
 
-        private Episode _SelectedEpisode;
-        public Episode SelectedEpisode
+        private EpisodeViewModel _SelectedEpisode;
+        public EpisodeViewModel SelectedEpisode
         {
             get { return _SelectedEpisode; }
             set
             {
-                Set<Episode>(() => SelectedEpisode, ref _SelectedEpisode, value);
+                Set<EpisodeViewModel>(() => SelectedEpisode, ref _SelectedEpisode, value);
                 ((RelayCommand)AddToPlaylistCommand).RaiseCanExecuteChanged();
+                ((RelayCommand)AddToDownloadsCommand).RaiseCanExecuteChanged();
             }
         }
 
@@ -164,11 +179,37 @@ namespace PodcastR.WindowsStore.ViewModel
             return SelectedEpisode != null;
         }
 
+        public async Task AddToDownloads()
+        {
+            if (!_downloads.Contains(SelectedEpisode))
+            {
+                _downloads.Add(SelectedEpisode);
+                await PodcastDownloaderService.DownloadPodcastEpisodeAsync(
+                    SelectedEpisode.Episode,
+                    SelectedEpisode.DownloadCallback,
+                    SelectedEpisode.CancellationTokenSource,
+                    SelectedEpisode.ErrorCallback);
+                await SavePodcastsAsync();
+            }
+        }
+
+        public bool CanAddToDownloadlist()
+        {
+            return SelectedEpisode != null;
+        }
+
         private void ShowPlaylist()
         {
             var playlistFlyout = new PlaylistFlyout();
             playlistFlyout.Width = 650;
             playlistFlyout.ShowIndependent();
+        }
+
+        private void ShowDownloads()
+        {
+            var downloadsFlyout = new DownloadsFlyout();
+            downloadsFlyout.Width = 650;
+            downloadsFlyout.ShowIndependent();
         }
     }
 }

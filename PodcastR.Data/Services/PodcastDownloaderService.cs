@@ -64,11 +64,12 @@ namespace PodcastR.Data.Services
             var podcastFolder = await appFolder.CreateFolderAsync(episode.Podcast.Name, CreationCollisionOption.OpenIfExists);
             try
             {
-                var extension = episode.Path.AbsolutePath.GetExtension();
+                var uri = new Uri(episode.Path);
+                var extension = uri.AbsolutePath.GetExtension();
                 var fileName = episode.Name + extension;
                 var episodeFile = await podcastFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
                 var backgroundDownloader = new BackgroundDownloader();
-                var downloadOperation = backgroundDownloader.CreateDownload(episode.Path, episodeFile);
+                var downloadOperation = backgroundDownloader.CreateDownload(uri, episodeFile);
                 var progress = new Progress<DownloadOperation>(callback);
                 downloads.Add(episode, downloadOperation);
                 cancellationTokenSources.Add(episode, cts);
@@ -76,7 +77,7 @@ namespace PodcastR.Data.Services
                 await downloadOperation.StartAsync().AsTask(cts.Token, progress);
 
                 episode.IsLocal = true;
-                episode.Path = new Uri(episodeFile.Path);
+                episode.Path = episodeFile.Path;
                 return episode;
             }
             catch

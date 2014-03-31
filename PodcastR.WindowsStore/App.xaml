@@ -4,6 +4,8 @@
         <x:String x:Key="AppName">PodcastR</x:String>
         <vm:ViewModelLocator x:Key="Locator" xmlns:vm="using:PodcastR.WindowsStore.ViewModel" />
         <conv:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter"/>
+        <conv:BackgroundTransferStatusToStringConverter x:Key="BackgroundTransferStatusToStringConverter"/>
+        <conv:UlongToDoubleConverter x:Key="UlongToDoubleConverter" />
         <Style  x:Key="RootFrameStyle" TargetType="Frame">
             <Setter Property="Template">
                 <Setter.Value>
@@ -25,12 +27,13 @@
                     <ColumnDefinition Width="400"/>
                 </Grid.ColumnDefinitions>
                 <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}" Height="100">
-                    <Image Source="{Binding ImageUrl}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Name}"/>
+                    <Image Source="{Binding Episode.ImageUrl}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Episode.Name}"/>
                 </Border>
                 <StackPanel Grid.Column="1" Margin="5">
-                    <TextBlock Text="{Binding Name}" Style="{StaticResource TitleTextBlockStyle}" TextWrapping="WrapWholeWords"/>
-                    <TextBlock Text="{Binding Author}" Style="{StaticResource BodyTextBlockStyle}" MaxHeight="60" />
-                    <TextBlock Text="{Binding Published}" Style="{StaticResource BodyTextBlockStyle}" MaxHeight="60"/>
+                    <TextBlock Text="{Binding Episode.Name}" Style="{StaticResource TitleTextBlockStyle}" TextWrapping="WrapWholeWords"/>
+                    <TextBlock Text="{Binding Episode.Author}" Style="{StaticResource BodyTextBlockStyle}" MaxHeight="60" />
+                    <TextBlock Text="{Binding Episode.Published}" Style="{StaticResource BodyTextBlockStyle}" MaxHeight="60"/>
+                    <ProgressBar Maximum="100" Minimum="0" Value="{Binding Percent, Converter={StaticResource UlongToDoubleConverter}}"/>
                 </StackPanel>
             </Grid>
         </DataTemplate>

@@ -1,5 +1,6 @@
 ﻿using PodcastR.Data.Entities;
 using PodcastR.WindowsStore.Common;
+using PodcastR.WindowsStore.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -43,7 +44,7 @@ namespace PodcastR.WindowsStore
             this.Suspending += OnSuspending;
         }
         public static MediaElement Player { get; set; }
-        public static IList<Episode> Playlist { get; set; }
+        public static IList<EpisodeViewModel> Playlist { get; set; }
         public static int Position { get; set; }
 
         /// <summary>
@@ -135,7 +136,7 @@ namespace PodcastR.WindowsStore
             {
                 var rootGrid = VisualTreeHelper.GetChild(Window.Current.Content, 0);
                 App.Player = (MediaElement)VisualTreeHelper.GetChild(rootGrid, 0);
-                App.Playlist = new List<Episode>();
+                App.Playlist = new List<EpisodeViewModel>();
                 systemControls = SystemMediaTransportControls.GetForCurrentView();
                 systemControls.IsPlayEnabled = true;
                 systemControls.IsPauseEnabled = true;
