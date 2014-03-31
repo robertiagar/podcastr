@@ -2,16 +2,14 @@
 using PodcastR.Data.Services;
 using PodcastR.WindowsStore.Common;
 using PodcastR.WindowsStore.Data;
-using PodcastR.WindowsStore.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
+using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.Networking.BackgroundTransfer;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -21,18 +19,18 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 
-// The Hub Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=321224
+// The Section Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234229
 
 namespace PodcastR.WindowsStore
 {
     /// <summary>
-    /// A page that displays a grouped collection of items.
+    /// A page that displays an overview of a single group, including a preview of the items
+    /// within the group.
     /// </summary>
-    public sealed partial class HubPage : Page
+    public sealed partial class PodcastPage : Page
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
-        private System.Threading.CancellationTokenSource cts = new System.Threading.CancellationTokenSource();
 
         /// <summary>
         /// NavigationHelper is used on each page to aid in navigation and 
@@ -51,7 +49,8 @@ namespace PodcastR.WindowsStore
             get { return this.defaultViewModel; }
         }
 
-        public HubPage()
+
+        public PodcastPage()
         {
             this.InitializeComponent();
             this.navigationHelper = new NavigationHelper(this);
@@ -69,65 +68,23 @@ namespace PodcastR.WindowsStore
         /// <see cref="Frame.Navigate(Type, Object)"/> when this page was initially requested and
         /// a dictionary of state preserved by this page during an earlier
         /// session.  The state will be null the first time a page is visited.</param>
-        private async void navigationHelper_LoadState(object sender, LoadStateEventArgs e)
+        private void navigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            var viewModel = (MainViewModel)this.DataContext;
-            if (this.DataContext != null && !viewModel.Podcasts.Any())
-            {
-                await viewModel.LoadPodcastsAsync();
-                await viewModel.LoadNewEpisodesAsync();
-                await viewModel.SavePodcastsAsync();
-            }
-
-            //var episode = await PodcastR.Data.Services.PodcastDownloaderService.DownloadPodcastEpisodeAsync(podcastsFromLocal[0].Episodes[2], p =>
-            //{
-            //    if (p.Progress.TotalBytesToReceive > 0)
-            //    {
-            //        defaultViewModel["Progress"] = p.Progress.BytesReceived * 100 / p.Progress.TotalBytesToReceive;
-            //    }
-            //    if (int.Parse(defaultViewModel["Progress"].ToString()) == 100)
-            //    {
-            //        defaultViewModel["Progress"] = "Downlod succesfull.";
-            //    }
-            //}, cts, errorCallback: () =>
-            //{
-            //    defaultViewModel["Progress"] = "Download cancelled or something went wrong.";
-            //});
+            this.DefaultViewModel["Podcast"] = (Podcast)e.NavigationParameter;
+            this.DefaultViewModel["Episodes"] = ((Podcast)e.NavigationParameter).Episodes;
         }
 
         /// <summary>
-        /// Invoked when a HubSection header is clicked.
+        /// Invoked when an item is clicked.
         /// </summary>
-        /// <param name="sender">The Hub that contains the HubSection whose header was clicked.</param>
-        /// <param name="e">Event data that describes how the click was initiated.</param>
-        void Hub_SectionHeaderClick(object sender, HubSectionHeaderClickEventArgs e)
-        {
-            HubSection section = e.Section;
-            var group = section.DataContext;
-            this.Frame.Navigate(typeof(PodcastPage), ((SampleDataGroup)group).UniqueId);
-        }
-
-        /// <summary>
-        /// Invoked when an item within a section is clicked.
-        /// </summary>
-        /// <param name="sender">The GridView or ListView
-        /// displaying the item clicked.</param>
+        /// <param name="sender">The GridView displaying the item clicked.</param>
         /// <param name="e">Event data that describes the item clicked.</param>
         void ItemView_ItemClick(object sender, ItemClickEventArgs e)
         {
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
-            var podcast = e.ClickedItem as Podcast;
-            var episode = e.ClickedItem as EpisodeViewModel;
-            if (podcast != null)
-                this.Frame.Navigate(typeof(PodcastPage), podcast);
-            if (episode != null)
-            {
-                //this.Frame.Navigate(typeof(EpisodePage), episode);
-                var viewModel = (MainViewModel)this.DataContext;
-                viewModel.NowPlaying = episode.Episode;
-                App.Player.Play(episode);
-            }
+            var episode = (Episode)e.ClickedItem;
+            this.Frame.Navigate(typeof(EpisodePage), episode);
         }
 
         #region NavigationHelper registration
@@ -152,14 +109,5 @@ namespace PodcastR.WindowsStore
         }
 
         #endregion
-
-        private void itemGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var context = (MainViewModel)this.DataContext;
-            if (context.SelectedEpisode != null)
-                context.IsOpen = true;
-            else
-                context.IsOpen = false;
-        }
     }
 }

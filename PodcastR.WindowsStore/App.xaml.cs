@@ -1,5 +1,6 @@
-﻿using PodcastR.WindowsStore.Common;
-
+﻿using PodcastR.Data.Entities;
+using PodcastR.WindowsStore.Common;
+using PodcastR.WindowsStore.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,14 +8,19 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Media;
+using Windows.Storage.Streams;
+using Windows.System.Display;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The Hub App template is documented at http://go.microsoft.com/fwlink/?LinkId=321221
@@ -26,6 +32,8 @@ namespace PodcastR.WindowsStore
     /// </summary>
     sealed partial class App : Application
     {
+        private static SystemMediaTransportControls systemControls;
+        private static DisplayRequest displayRequestManager;
         /// <summary>
         /// Initializes the singleton Application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -35,6 +43,9 @@ namespace PodcastR.WindowsStore
             this.InitializeComponent();
             this.Suspending += OnSuspending;
         }
+        public static MediaElement Player { get; set; }
+        public static IList<EpisodeViewModel> Playlist { get; set; }
+        public static int Position { get; set; }
 
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
@@ -63,7 +74,8 @@ namespace PodcastR.WindowsStore
                 SuspensionManager.RegisterFrame(rootFrame, "AppFrame");
                 // Set the default language
                 rootFrame.Language = Windows.Globalization.ApplicationLanguages.Languages[0];
-
+                // create the media element for background audio
+                rootFrame.Style = Resources["RootFrameStyle"] as Style;
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
@@ -116,6 +128,95 @@ namespace PodcastR.WindowsStore
             var deferral = e.SuspendingOperation.GetDeferral();
             await SuspensionManager.SaveAsync();
             deferral.Complete();
+        }
+
+        public static void SetUpBackgroundAudio()
+        {
+            if (Player == null)
+            {
+                var rootGrid = VisualTreeHelper.GetChild(Window.Current.Content, 0);
+                App.Player = (MediaElement)VisualTreeHelper.GetChild(rootGrid, 0);
+                App.Playlist = new List<EpisodeViewModel>();
+                systemControls = SystemMediaTransportControls.GetForCurrentView();
+                systemControls.IsPlayEnabled = true;
+                systemControls.IsPauseEnabled = true;
+                systemControls.IsStopEnabled = true;
+                systemControls.IsEnabled = true;
+                systemControls.DisplayUpdater.Type = MediaPlaybackType.Music;
+                systemControls.ButtonPressed += systemControls_ButtonPressed;
+                displayRequestManager = new DisplayRequest();
+            }
+        }
+
+        public static void UpdatePreviosNextButtons()
+        {
+            systemControls.IsNextEnabled = Playlist.Any();
+            systemControls.IsPreviousEnabled = Playlist.Any();
+        }
+
+        private static async void systemControls_ButtonPressed(SystemMediaTransportControls sender, SystemMediaTransportControlsButtonPressedEventArgs args)
+        {
+            var dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
+            switch (args.Button)
+            {
+                case SystemMediaTransportControlsButton.Next:
+                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        if (Position + 1 >= Playlist.Count)
+                        {
+                            Player.Play(Playlist[0]);
+                        }
+                        else
+                        {
+                            Player.Play(Playlist[Position + 1]);
+                        }
+                    });
+                    break;
+                case SystemMediaTransportControlsButton.Pause:
+                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        Player.Pause();
+                        systemControls.PlaybackStatus = MediaPlaybackStatus.Paused;
+                    });
+                    break;
+                case SystemMediaTransportControlsButton.Play:
+                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        Player.Play();
+                        systemControls.PlaybackStatus = MediaPlaybackStatus.Playing;
+                    });
+                    break;
+                case SystemMediaTransportControlsButton.Previous:
+                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        if (Position == 0)
+                        {
+                            Player.Play(Playlist[Playlist.Count - 1]);
+                        }
+                        else
+                        {
+                            Player.Play(Playlist[Position - 1]);
+                        }
+                    });
+                    break;
+                case SystemMediaTransportControlsButton.Stop:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public static void UpdateSystemControls(Episode episode)
+        {
+            if (systemControls != null)
+            {
+                systemControls.DisplayUpdater.Thumbnail = RandomAccessStreamReference.CreateFromUri(episode.ImageUrl);
+                systemControls.DisplayUpdater.MusicProperties.AlbumArtist = episode.Podcast.Name;
+                systemControls.DisplayUpdater.MusicProperties.Artist = episode.Author;
+                systemControls.DisplayUpdater.MusicProperties.Title = episode.Name;
+                systemControls.DisplayUpdater.Update();
+                systemControls.PlaybackStatus = MediaPlaybackStatus.Playing;
+            }
         }
     }
 }

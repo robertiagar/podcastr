@@ -1,0 +1,23 @@
+﻿<SettingsFlyout
+    x:Class="PodcastR.WindowsStore.Flyouts.PlaylistFlyout"
+    DataContext="{Binding DefaultViewModel, RelativeSource={RelativeSource Self}}"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PodcastR.WindowsStore.Flyouts"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    IconSource="Assets/SmallLogo.png"
+    Title="Playlist"
+    d:DesignWidth="650"
+    Loaded="SettingsFlyout_Loaded">
+
+    <!-- This StackPanel acts as a root panel for vertical layout of the content sections -->
+    <ListView ItemsSource="{Binding Playlist}" 
+              HorizontalContentAlignment="Stretch"
+              ItemTemplate="{StaticResource EpisodeTemplate}"
+              ItemClick="ListView_ItemClick"
+              IsItemClickEnabled="True"
+              SelectionMode="None">
+    </ListView>
+</SettingsFlyout>

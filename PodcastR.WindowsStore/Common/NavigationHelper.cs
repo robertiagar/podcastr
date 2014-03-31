@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PodcastR.Data.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -87,6 +88,8 @@ namespace PodcastR.WindowsStore.Common
                     Window.Current.CoreWindow.PointerPressed +=
                         this.CoreWindow_PointerPressed;
                 }
+                App.SetUpBackgroundAudio();
+                App.UpdatePreviosNextButtons();
             };
 
             // Undo the same changes when the page is no longer visible
