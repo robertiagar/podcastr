@@ -183,6 +183,7 @@ namespace PodcastR.WindowsStore.ViewModel
         {
             if (!_downloads.Contains(SelectedEpisode))
             {
+                SelectedEpisode.IsDownloading = true;
                 _downloads.Add(SelectedEpisode);
                 await PodcastDownloaderService.DownloadPodcastEpisodeAsync(
                     SelectedEpisode.Episode,

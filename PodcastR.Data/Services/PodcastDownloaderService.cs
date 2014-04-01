@@ -87,5 +87,20 @@ namespace PodcastR.Data.Services
                 return episode;
             }
         }
+
+        public static async Task ToggleEpisodeLocationAsync(Episode episode, Action<DownloadOperation> callback, CancellationTokenSource cts, Action errorCallback = null)
+        {
+            if (episode.IsLocal)
+            {
+                var file = await StorageFile.GetFileFromPathAsync(episode.Path);
+                await file.DeleteAsync();
+                episode.Path = episode.WebPath;
+                episode.IsLocal = false;
+            }
+            else
+            {
+                await DownloadPodcastEpisodeAsync(episode, callback, cts, errorCallback);
+            }
+        }
     }
 }
