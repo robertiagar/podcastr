@@ -112,7 +112,9 @@
     <Compile Include="Converters\BackgroundTransferStatusToStringConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\IsLocalToSymbolConverter.cs" />
+    <Compile Include="Converters\IsLocalToTextConverter.cs" />
     <Compile Include="Converters\ObjectToVisibilityConverter.cs" />
+    <Compile Include="Converters\TimeSpanToStringConverter.cs" />
     <Compile Include="Converters\UlongToDoubleConverter.cs" />
     <Compile Include="Flyouts\DownloadsFlyout.xaml.cs">
       <DependentUpon>DownloadsFlyout.xaml</DependentUpon>
@@ -137,8 +139,16 @@
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="ViewModel\EpisodeViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\NowPlayingViewModel.cs" />
+    <Compile Include="ViewModel\PodcastViewModel.cs" />
     <Compile Include="ViewModel\StickyAppBarViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="Views\EpisodesPage.xaml.cs">
+      <DependentUpon>EpisodesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PodcastsPage.xaml.cs">
+      <DependentUpon>PodcastsPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -187,6 +197,14 @@
     <Page Include="EpisodePage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\EpisodesPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PodcastsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

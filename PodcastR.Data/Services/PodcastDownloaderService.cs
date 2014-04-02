@@ -66,7 +66,7 @@ namespace PodcastR.Data.Services
             {
                 var uri = new Uri(episode.Path);
                 var extension = uri.AbsolutePath.GetExtension();
-                var fileName = episode.Name + extension;
+                var fileName = (episode.Name + extension).RemoveIllegalPathChars().Replace(":","");
                 var episodeFile = await podcastFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
                 var backgroundDownloader = new BackgroundDownloader();
                 var downloadOperation = backgroundDownloader.CreateDownload(uri, episodeFile);
@@ -76,6 +76,8 @@ namespace PodcastR.Data.Services
 
                 await downloadOperation.StartAsync().AsTask(cts.Token, progress);
 
+                downloads.Remove(episode);
+                cancellationTokenSources.Remove(episode);
                 episode.IsLocal = true;
                 episode.Path = episodeFile.Path;
                 return episode;

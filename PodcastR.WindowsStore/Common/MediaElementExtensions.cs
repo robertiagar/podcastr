@@ -8,13 +8,40 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace PodcastR.WindowsStore.Common
 {
     public static class MediaElementExtensions
     {
-        public static MainViewModel _viewModel = ServiceLocator.Current.GetInstance<MainViewModel>();
+        private static MainViewModel _viewModel = ServiceLocator.Current.GetInstance<MainViewModel>();
+        private static DispatcherTimer timer;
+        private static int absvalue;
+
+        private static void SetupTimer()
+        {
+            if (timer != null)
+            {
+                timer.Stop();
+                timer = null;
+            }
+
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += timer_Tick;
+        }
+
+        private static void timer_Tick(object sender, object e)
+        {
+            if (_viewModel != null && _viewModel.NowPlaying != null)
+            {
+                absvalue = (int)Math.Round(App.Player.NaturalDuration.TimeSpan.TotalSeconds, MidpointRounding.AwayFromZero);
+                _viewModel.NowPlaying.ElapsedTime = TimeSpan.FromSeconds(App.Player.Position.TotalSeconds);
+                _viewModel.NowPlaying.TotalTime = TimeSpan.FromSeconds(absvalue);
+            }
+        }
+
         public static void Play(this MediaElement element, EpisodeViewModel episode)
         {
             if (App.Playlist == null)
@@ -34,22 +61,26 @@ namespace PodcastR.WindowsStore.Common
 
         private static void Play(EpisodeViewModel episode)
         {
+
             if (episode.Episode.Path.StartsWith("http://") ||
                 episode.Episode.Path.StartsWith("https://"))
                 PlayFromNetwork(episode);
             else
                 PlayLocalEpisode(episode);
-        }        
+
+            SetupTimer();
+            timer.Start();
+        }
 
         private static async void PlayLocalEpisode(EpisodeViewModel episode)
         {
             try
             {
-                var file  = await StorageFile.GetFileFromPathAsync(episode.Episode.Path);
+                var file = await StorageFile.GetFileFromPathAsync(episode.Episode.Path);
                 IRandomAccessStream stream = await file.OpenAsync(FileAccessMode.Read);
                 App.Player.SetSource(stream, file.ContentType);
                 App.UpdateSystemControls(episode.Episode);
-                _viewModel.NowPlaying = episode.Episode;
+                _viewModel.NowPlaying.Episode = episode.Episode;
             }
             catch (Exception ex)
             {
@@ -66,7 +97,7 @@ namespace PodcastR.WindowsStore.Common
             App.Position = App.Playlist.IndexOf(episode);
             App.Player.Play();
             App.UpdateSystemControls(episode.Episode);
-            _viewModel.NowPlaying = episode.Episode;
+            _viewModel.NowPlaying.Episode = episode.Episode;
         }
     }
 }

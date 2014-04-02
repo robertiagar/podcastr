@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using Microsoft.Practices.ServiceLocation;
 using PodcastR.Data.Entities;
 using PodcastR.Data.Services;
+using PodcastR.WindowsStore.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Networking.BackgroundTransfer;
+using Windows.UI.Popups;
 
 namespace PodcastR.WindowsStore.ViewModel
 {
@@ -20,10 +22,10 @@ namespace PodcastR.WindowsStore.ViewModel
         {
             this.Episode = episode;
             this.CancellationTokenSource = new CancellationTokenSource();
-            this.ToggleEpsidoeLocationCommand = new RelayCommand(async () => await this.ToggleEpisodeLocationAsync());
+            this.ToggleEpsidoeLocationCommand = new GalaSoft.MvvmLight.Command.RelayCommand(async () => await this.ToggleEpisodeLocationAsync());
+            this.PlayCommand = new GalaSoft.MvvmLight.Command.RelayCommand(() => App.Player.Play(this));
             this.IsLocal = episode.IsLocal;
         }
-
 
         private ulong _Percent;
         private ulong _TotalBytesToDownload;
@@ -33,6 +35,7 @@ namespace PodcastR.WindowsStore.ViewModel
         private BackgroundTransferStatus _Status;
 
         public ICommand ToggleEpsidoeLocationCommand { get; private set; }
+        public ICommand PlayCommand { get; set; }
 
         public Episode Episode { get; set; }
 
@@ -115,14 +118,36 @@ namespace PodcastR.WindowsStore.ViewModel
 
         private async Task ToggleEpisodeLocationAsync()
         {
-            this.IsDownloading = true;
-            await PodcastDownloaderService.ToggleEpisodeLocationAsync(this.Episode, 
-                DownloadCallback, 
-                CancellationTokenSource, 
-                ErrorCallback);
-            this.IsDownloading = false;
-            this.IsLocal = Episode.IsLocal;
-            await ServiceLocator.Current.GetInstance<MainViewModel>().SavePodcastsAsync();
+            var delete = false;
+            if (this.Episode.IsLocal)
+            {
+                var dialog = new MessageDialog(string.Format("Are you sure you want to delete {0} from {1}?\n\nNote: This will delete the file from your local storage, not remove the episode from the feed.", Episode.Name, Episode.Podcast.Name));
+                dialog.Commands.Add(new UICommand("Ok", p =>
+                {
+                    delete = true;
+                }));
+                dialog.Commands.Add(new UICommand("Cancel", p =>
+                {
+                    delete = false;
+                }));
+                dialog.CancelCommandIndex = 1;
+                dialog.DefaultCommandIndex = 0;
+                dialog.Title = string.Format("Delete?", Episode.Name);
+                await dialog.ShowAsync();
+            }
+            if (delete || !this.Episode.IsLocal)
+            {
+                this.IsDownloading = true;
+                ServiceLocator.Current.GetInstance<MainViewModel>().Downloads.Add(this);
+                await PodcastDownloaderService.ToggleEpisodeLocationAsync(this.Episode,
+                    DownloadCallback,
+                    CancellationTokenSource,
+                    ErrorCallback);
+                this.IsDownloading = false;
+                this.IsLocal = Episode.IsLocal;
+                await ServiceLocator.Current.GetInstance<MainViewModel>().SavePodcastsAsync();
+                ServiceLocator.Current.GetInstance<MainViewModel>().Downloads.Remove(this);
+            }
         }
     }
 }

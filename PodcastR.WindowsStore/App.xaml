@@ -14,6 +14,8 @@
         <conv:BackgroundTransferStatusToStringConverter x:Key="BackgroundTransferStatusToStringConverter"/>
         <conv:UlongToDoubleConverter x:Key="UlongToDoubleConverter" />
         <conv:IsLocalToSymbolConverter x:Key="IsLocalToSymbolConverter"/>
+        <conv:IsLocalToTextConverter x:Key="IsLocalToTextConverter"/>
+        <conv:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter"/>
         <Style  x:Key="RootFrameStyle" TargetType="Frame">
             <Setter Property="Template">
                 <Setter.Value>
@@ -154,7 +156,7 @@
         </Style>
         <DataTemplate x:Key="EpisodeTemplate">
             <Grid Height="100" Width="500" Margin="0">
-                <Grid.ColumnDefinitions>
+                  <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="400"/>
                 </Grid.ColumnDefinitions>
@@ -175,7 +177,7 @@
                     <TextBlock Text="{Binding Episode.Name}" Style="{StaticResource TitleTextBlockStyle}" TextWrapping="WrapWholeWords"/>
                     <TextBlock Text="{Binding Episode.Author}" Style="{StaticResource BodyTextBlockStyle}" MaxHeight="60" />
                     <TextBlock Text="{Binding Episode.Published}" Style="{StaticResource BodyTextBlockStyle}" MaxHeight="60"/>
-                    <ProgressBar Maximum="100" Minimum="0" Margin="5"
+                    <ProgressBar Maximum="100" Minimum="0" Margin="0,5,0,5"
         				Value="{Binding Percent, Converter={StaticResource UlongToDoubleConverter}}" 
         				Visibility="{Binding IsDownloading, Converter={StaticResource BoolToVisibilityConverter}}"/>
                 </StackPanel>

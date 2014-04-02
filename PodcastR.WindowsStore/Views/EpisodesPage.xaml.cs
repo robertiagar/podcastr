@@ -1,14 +1,10 @@
-﻿using PodcastR.Data.Entities;
-using PodcastR.Data.Services;
-using PodcastR.WindowsStore.Common;
-using PodcastR.WindowsStore.Data;
+﻿using PodcastR.WindowsStore.Common;
 using PodcastR.WindowsStore.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -19,19 +15,26 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+// The Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234233
 
-// The Section Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234229
-
-namespace PodcastR.WindowsStore
+namespace PodcastR.WindowsStore.Views
 {
     /// <summary>
-    /// A page that displays an overview of a single group, including a preview of the items
-    /// within the group.
+    /// A page that displays a collection of item previews.  In the Split Application this page
+    /// is used to display and select one of the available groups.
     /// </summary>
-    public sealed partial class PodcastPage : Page
+    public sealed partial class EpisodesPage : Page
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
+
+        /// <summary>
+        /// This can be changed to a strongly typed view model.
+        /// </summary>
+        public ObservableDictionary DefaultViewModel
+        {
+            get { return this.defaultViewModel; }
+        }
 
         /// <summary>
         /// NavigationHelper is used on each page to aid in navigation and 
@@ -42,16 +45,7 @@ namespace PodcastR.WindowsStore
             get { return this.navigationHelper; }
         }
 
-        /// <summary>
-        /// This can be changed to a strongly typed view model.
-        /// </summary>
-        public ObservableDictionary DefaultViewModel
-        {
-            get { return this.defaultViewModel; }
-        }
-
-
-        public PodcastPage()
+        public EpisodesPage()
         {
             this.InitializeComponent();
             this.navigationHelper = new NavigationHelper(this);
@@ -71,21 +65,8 @@ namespace PodcastR.WindowsStore
         /// session.  The state will be null the first time a page is visited.</param>
         private void navigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            this.DefaultViewModel["Podcast"] = (PodcastViewModel)e.NavigationParameter;
-            this.DefaultViewModel["Episodes"] = ((PodcastViewModel)e.NavigationParameter).Episodes;
-        }
-
-        /// <summary>
-        /// Invoked when an item is clicked.
-        /// </summary>
-        /// <param name="sender">The GridView displaying the item clicked.</param>
-        /// <param name="e">Event data that describes the item clicked.</param>
-        void ItemView_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            // Navigate to the appropriate destination page, configuring the new page
-            // by passing required information as a navigation parameter
-            var episode = (EpisodeViewModel)e.ClickedItem;
-            this.Frame.Navigate(typeof(EpisodePage), episode);
+            // TODO: Assign a bindable collection of items to this.DefaultViewModel["Items"]
+            this.DefaultViewModel["Items"] = (IList<EpisodeViewModel>)e.NavigationParameter;
         }
 
         #region NavigationHelper registration
@@ -110,5 +91,6 @@ namespace PodcastR.WindowsStore
         }
 
         #endregion
+
     }
 }
