@@ -3,6 +3,7 @@ using PodcastR.Data.Services;
 using PodcastR.WindowsStore.Common;
 using PodcastR.WindowsStore.Data;
 using PodcastR.WindowsStore.ViewModel;
+using PodcastR.WindowsStore.Views;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -100,11 +101,19 @@ namespace PodcastR.WindowsStore
         /// </summary>
         /// <param name="sender">The Hub that contains the HubSection whose header was clicked.</param>
         /// <param name="e">Event data that describes how the click was initiated.</param>
-        void Hub_SectionHeaderClick(object sender, HubSectionHeaderClickEventArgs e)
+        async void Hub_SectionHeaderClick(object sender, HubSectionHeaderClickEventArgs e)
         {
             HubSection section = e.Section;
-            var group = section.DataContext;
-            this.Frame.Navigate(typeof(PodcastPage), ((SampleDataGroup)group).UniqueId);
+            var podcasts = await PodcastService.GetSubscriptions(0);
+            var episodes = podcasts.SelectMany(p => p.Episodes).Select(ep => new EpisodeViewModel(ep)).OrderByDescending(ep=>ep.Episode.Published).ToList();
+            if (section.Header.Equals("Subscriptions"))
+            {
+                this.Frame.Navigate(typeof(PodcastsPage), podcasts.Select(p => new PodcastViewModel(p)).ToList());
+            }
+            if (section.Header.Equals("Episodes"))
+            {
+                this.Frame.Navigate(typeof(EpisodesPage), episodes);
+            }
         }
 
         /// <summary>
@@ -117,7 +126,7 @@ namespace PodcastR.WindowsStore
         {
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
-            var podcast = e.ClickedItem as Podcast;
+            var podcast = e.ClickedItem as PodcastViewModel;
             var episode = e.ClickedItem as EpisodeViewModel;
             if (podcast != null)
                 this.Frame.Navigate(typeof(PodcastPage), podcast);
@@ -125,7 +134,7 @@ namespace PodcastR.WindowsStore
             {
                 //this.Frame.Navigate(typeof(EpisodePage), episode);
                 var viewModel = (MainViewModel)this.DataContext;
-                viewModel.NowPlaying = episode.Episode;
+                viewModel.NowPlaying.Episode = episode.Episode;
                 App.Player.Play(episode);
             }
         }

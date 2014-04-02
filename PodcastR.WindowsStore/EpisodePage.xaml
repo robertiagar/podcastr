@@ -37,14 +37,26 @@
                 <ColumnDefinition Width="553"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Image Source="{Binding ImageUrl}" 
-                   Stretch="UniformToFill" 
-                   Width="500" Height="500"
-                   VerticalAlignment="Top"
-                   Margin="39,4,14,0" AutomationProperties.Name="{Binding Name}"/>
+            <StackPanel Orientation="Vertical"
+                        VerticalAlignment="Top"
+                        Margin="39,4,14,0">
+                <Image Source="{Binding Episode.ImageUrl}" 
+                       Stretch="UniformToFill" 
+                       Width="500" Height="500"
+                       AutomationProperties.Name="{Binding Episode.Name}"/>
+                <StackPanel Orientation="Horizontal">
+                    <AppBarButton Icon="{Binding IsLocal, Converter={StaticResource IsLocalToSymbolConverter}}" 
+                                  Command="{Binding ToggleEpsidoeLocationCommand}" 
+                                  Visibility="{Binding Episode, Converter={StaticResource ObjectToVisibilityConverter}}"
+                                  Label="{Binding IsLocal, Converter={StaticResource IsLocalToTextConverter}}"/>
+                    <AppBarButton Icon="Play" 
+                                  Command="{Binding PlayCommand}" 
+                                  Label="Play"/>
+                </StackPanel>
+            </StackPanel>
             <Grid Grid.Column="1">
                 <StackPanel>
-                    <TextBlock Margin="10" Text="{Binding Summary}" Style="{StaticResource BodyTextBlockStyle}" TextWrapping="Wrap"/>
+                    <TextBlock Margin="10" Text="{Binding Episode.Summary}" Style="{StaticResource BodyTextBlockStyle}" TextWrapping="Wrap"/>
                 </StackPanel>
             </Grid>
         </Grid>
@@ -61,7 +73,7 @@
                         AutomationProperties.Name="Back"
                         AutomationProperties.AutomationId="BackButton"
                         AutomationProperties.ItemType="Navigation Button"/>
-            <TextBlock x:Name="pageTitle" Text="{Binding Name}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" 
+            <TextBlock x:Name="pageTitle" Text="{Binding Episode.Name}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" 
                         IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,30,40"/>
         </Grid>
     </Grid>

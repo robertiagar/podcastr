@@ -48,8 +48,9 @@
             SelectionMode="None"
             IsSwipeEnabled="false"
             IsItemClickEnabled="True"
-            ItemClick="ItemView_ItemClick">
-            <GridView.ItemTemplate>
+            ItemClick="ItemView_ItemClick"
+            ItemTemplate="{StaticResource EpisodeTemplate}">
+            <!--<GridView.ItemTemplate>
                 <DataTemplate>
                     <Grid Height="110" Width="480" Margin="10">
                         <Grid.ColumnDefinitions>
@@ -57,21 +58,21 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="110" Height="110">
-                            <Image Source="{Binding ImageUrl}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Name}"/>
+                            <Image Source="{Binding Episode.ImageUrl}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Episode.Name}"/>
                         </Border>
                         <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="10,0,0,0">
-                            <TextBlock Text="{Binding Name}" Style="{StaticResource TitleTextBlockStyle}" TextWrapping="NoWrap"/>
-                            <TextBlock Text="{Binding Podcast.Author}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="NoWrap"/>
-                            <TextBlock Text="{Binding Summary}" Style="{StaticResource BodyTextBlockStyle}" MaxHeight="60"/>
+                            <TextBlock Text="{Binding Episode.Name}" Style="{StaticResource TitleTextBlockStyle}" TextWrapping="NoWrap"/>
+                            <TextBlock Text="{Binding Episode.Podcast.Author}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="NoWrap"/>
+                            <TextBlock Text="{Binding Episode.Summary}" Style="{StaticResource BodyTextBlockStyle}" MaxHeight="60"/>
                         </StackPanel>
                     </Grid>
                 </DataTemplate>
-            </GridView.ItemTemplate>
+            </GridView.ItemTemplate>-->
             <GridView.Header>
                 <StackPanel Width="480" Margin="0,4,14,0">
-                    <TextBlock Text="{Binding Author}" Margin="0,0,0,20" Style="{StaticResource SubheaderTextBlockStyle}" MaxHeight="60"/>
-                    <Image Source="{Binding ImageUrl}" Height="400" Margin="0,0,0,20" Stretch="UniformToFill" AutomationProperties.Name="{Binding Author}"/>
-                    <TextBlock Text="{Binding Description}" Margin="0,0,0,0" Style="{StaticResource BodyTextBlockStyle}"/>
+                    <TextBlock Text="{Binding Podcast.Author}" Margin="0,0,0,20" Style="{StaticResource SubheaderTextBlockStyle}" MaxHeight="60"/>
+                    <Image Source="{Binding Podcast.ImageUrl}" Height="400" Margin="0,0,0,20" Stretch="UniformToFill" AutomationProperties.Name="{Binding Podcast.Author}"/>
+                    <TextBlock Text="{Binding Podcast.Description}" Margin="0,0,0,0" Style="{StaticResource BodyTextBlockStyle}"/>
                 </StackPanel>
             </GridView.Header>
             <GridView.ItemContainerStyle>
@@ -99,7 +100,7 @@
                         AutomationProperties.AutomationId="BackButton"
                         AutomationProperties.ItemType="Navigation Button"/>
             <TextBlock x:Name="pageTitle" 
-                       Text="{Binding Name}" 
+                       Text="{Binding Podcast.Name}" 
                        Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" 
                        IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,30,40"/>
         </Grid>

@@ -26,7 +26,7 @@ namespace PodcastR.WindowsStore.ViewModel
     /// </summary>
     public class MainViewModel : StickyAppBarViewModel
     {
-        private ObservableCollection<Podcast> _podcasts;
+        private ObservableCollection<PodcastViewModel> _podcasts;
         private ObservableCollection<EpisodeViewModel> _episodes;
         private ObservableCollection<EpisodeViewModel> _downloads;
 
@@ -43,9 +43,10 @@ namespace PodcastR.WindowsStore.ViewModel
             ////{
             ////    // Code runs "for real"
             ////}
-            this._podcasts = new ObservableCollection<Podcast>();
+            this._podcasts = new ObservableCollection<PodcastViewModel>();
             this._episodes = new ObservableCollection<EpisodeViewModel>();
             this._downloads = new ObservableCollection<EpisodeViewModel>();
+            this._NowPlaying = new NowPlayingViewModel();
             this.AddPodcastCommand = new RelayCommand(async () => await AddPodcastAsync());
             this.ClearPodcastsCommand = new RelayCommand(async () => { ClearPodcasts(); await SavePodcastsAsync(); });
             this.AddToPlaylistCommand = new RelayCommand(() => AddToPlaylist(), () => CanAddToPlaylist());
@@ -54,7 +55,7 @@ namespace PodcastR.WindowsStore.ViewModel
             this.ShowDownloadsFlyoutCommand = new RelayCommand(() => ShowDownloads());
         }
 
-        public IList<Podcast> Podcasts
+        public IList<PodcastViewModel> Podcasts
         {
             get { return _podcasts; }
         }
@@ -69,6 +70,11 @@ namespace PodcastR.WindowsStore.ViewModel
             get { return _downloads; }
         }
 
+        public IList<EpisodeViewModel> Playlist
+        {
+            get { return App.Playlist; }
+        }
+
         public ICommand AddPodcastCommand { get; private set; }
         public ICommand ClearPodcastsCommand { get; private set; }
         public ICommand AddToPlaylistCommand { get; private set; }
@@ -81,16 +87,16 @@ namespace PodcastR.WindowsStore.ViewModel
             var podcasts = (await PodcastService.GetSubscriptions(6));
             if (podcasts != null)
             {
-                var episodes = podcasts.SelectMany(p => p.Episodes).OrderByDescending(e => e.Published).Take(12);
+                var episodes = podcasts.SelectMany(p => p.Episodes).OrderByDescending(e => e.Published).Take(12).Select(ep => new EpisodeViewModel(ep));
 
                 foreach (var podcast in podcasts)
                 {
-                    _podcasts.Add(podcast);
+                    _podcasts.Add(new PodcastViewModel(podcast));
                 }
 
                 foreach (var episode in episodes)
                 {
-                    _episodes.Add(new EpisodeViewModel(episode));
+                    _episodes.Add(episode);
                 }
             }
         }
@@ -98,7 +104,7 @@ namespace PodcastR.WindowsStore.ViewModel
         public async Task LoadNewEpisodesAsync()
         {
             var episodes = _episodes.ToList();
-            var newEpisodes = await PodcastService.CheckForNewEpisodes(_podcasts);
+            var newEpisodes = await PodcastService.CheckForNewEpisodes(_podcasts.Select(p=>p.Podcast));
             episodes.AddRange(from episode in newEpisodes
                               select new EpisodeViewModel(episode));
             foreach (var episode in episodes.OrderBy(e => e.Episode.Published))
@@ -111,7 +117,7 @@ namespace PodcastR.WindowsStore.ViewModel
         public async Task AddPodcastAsync()
         {
             var podcast = await PodcastService.LoadPodcastAsync(FeedUri);
-            _podcasts.Add(podcast);
+            _podcasts.Add(new PodcastViewModel(podcast));
             foreach (var episode in podcast.Episodes.Take(5).OrderBy(e => e.Published).ToList())
             {
                 int i = 0;
@@ -130,7 +136,7 @@ namespace PodcastR.WindowsStore.ViewModel
 
         public async Task SavePodcastsAsync()
         {
-            await PodcastService.SavePodcastsToLocalStorage(_podcasts);
+            await PodcastService.SavePodcastsToLocalStorage(_podcasts.Select(p => p.Podcast).ToList());
         }
 
         private string _FeedUri;
@@ -152,16 +158,24 @@ namespace PodcastR.WindowsStore.ViewModel
                 Set<EpisodeViewModel>(() => SelectedEpisode, ref _SelectedEpisode, value);
                 ((RelayCommand)AddToPlaylistCommand).RaiseCanExecuteChanged();
                 ((RelayCommand)AddToDownloadsCommand).RaiseCanExecuteChanged();
+                if (SelectedEpisode != null)
+                {
+                    IsOpen = true;
+                }
+                else
+                {
+                    IsOpen = false;
+                }
             }
         }
 
-        private Episode _NowPlaying;
-        public Episode NowPlaying
+        private NowPlayingViewModel _NowPlaying;
+        public NowPlayingViewModel NowPlaying
         {
             get { return _NowPlaying; }
             set
             {
-                Set<Episode>(() => NowPlaying, ref _NowPlaying, value);
+                Set<NowPlayingViewModel>(() => NowPlaying, ref _NowPlaying, value);
             }
         }
 
@@ -183,6 +197,7 @@ namespace PodcastR.WindowsStore.ViewModel
         {
             if (!_downloads.Contains(SelectedEpisode))
             {
+                SelectedEpisode.IsDownloading = true;
                 _downloads.Add(SelectedEpisode);
                 await PodcastDownloaderService.DownloadPodcastEpisodeAsync(
                     SelectedEpisode.Episode,

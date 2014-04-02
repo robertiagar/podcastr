@@ -1,6 +1,7 @@
 ﻿using PodcastR.Data.Entities;
 using PodcastR.WindowsStore.Common;
 using PodcastR.WindowsStore.Data;
+using PodcastR.WindowsStore.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -67,7 +68,7 @@ namespace PodcastR.WindowsStore
         /// session.  The state will be null the first time a page is visited.</param>
         private void navigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            var episode = (Episode)e.NavigationParameter;
+            var episode = (EpisodeViewModel)e.NavigationParameter;
             this.DefaultViewModel["Episode"] = episode;
         }
 

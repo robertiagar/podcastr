@@ -13,55 +13,46 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <CollectionViewSource x:Name="PodcastsViewSource" Source="{Binding Podcasts}">
-
-        </CollectionViewSource>
-
         <DataTemplate x:Key="PodcastTemplate">
             <Grid Height="175" Width="175" Margin="0">
                 <Grid.Background>
-                    <ImageBrush ImageSource="{Binding ImageUrl}" Stretch="Fill" AutomationProperties.Name="{Binding Name}"/>
+                    <ImageBrush ImageSource="{Binding Podcast.ImageUrl}" Stretch="Fill" AutomationProperties.Name="{Binding Podcast.Name}"/>
                 </Grid.Background>
                 <StackPanel VerticalAlignment="Bottom" Background="Black" Opacity=".75">
                     <StackPanel Margin="5">
-                        <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="Light"  TextWrapping="NoWrap"/>
+                        <TextBlock Text="{Binding Podcast.Name}" FontSize="15" FontWeight="Light"  TextWrapping="NoWrap"/>
                     </StackPanel>
                 </StackPanel>
             </Grid>
         </DataTemplate>
 
         <Flyout x:Key="AddPodcastFlyout">
-            <Grid>
-                <Grid.ChildrenTransitions>
+            <StackPanel Width="400">
+                <StackPanel.ChildrenTransitions>
                     <TransitionCollection>
                         <EntranceThemeTransition/>
                     </TransitionCollection>
-                </Grid.ChildrenTransitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.ColumnSpan="2" Margin="10"
+                </StackPanel.ChildrenTransitions>
+                <TextBlock Margin="10"
                            Style="{StaticResource HeaderTextBlockStyle}"
                            Text="Add Podcast"/>
-                <TextBox Grid.Row="1" Margin="10"
+                <TextBox Margin="10"
                          Text="{Binding FeedUri,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-                <Button Grid.Row="1" Margin="10"
+                <Button Margin="10"
                         Grid.Column="1"
                         Content="Add"
                         Command="{Binding AddPodcastCommand}"/>
-            </Grid>
+            </StackPanel>
         </Flyout>
     </Page.Resources>
     <Page.BottomAppBar>
         <CommandBar Padding="10,0,10,0" IsSticky="True" IsOpen="{Binding IsOpen}">
             <AppBarButton Icon="Add" Label="Add To Playlist" Command="{Binding AddToPlaylistCommand}"/>
             <AppBarButton Icon="List" Label="Playlist" Command="{Binding ShowPlaylistFlyoutCommand}"/>
-            <AppBarButton Icon="Download" Label="Download" Command="{Binding AddToDownloadsCommand}"/>
+            <AppBarButton Icon="{Binding SelectedEpisode.IsLocal, Converter={StaticResource IsLocalToSymbolConverter}}" 
+                          Command="{Binding SelectedEpisode.ToggleEpsidoeLocationCommand}" 
+                          Visibility="{Binding SelectedEpisode, Converter={StaticResource ObjectToVisibilityConverter}}"
+                          Label="{Binding SelectedEpisode.IsLocal, Converter={StaticResource IsLocalToTextConverter}}"/>
             <AppBarButton Icon="Manage" Label="Downloads" Command="{Binding ShowDownloadsFlyoutCommand}"/>
             <CommandBar.SecondaryCommands>
                 <AppBarButton Flyout="{StaticResource AddPodcastFlyout}" Icon="Add" Label="Add Podcast"/>
@@ -88,9 +79,10 @@
             </Hub.Header>
             <HubSection Width="850" DataContext="{Binding NowPlaying}" 
                         VerticalContentAlignment="Center" 
-                        HorizontalAlignment="Center">
+                        HorizontalAlignment="Center" 
+                        Visibility="{Binding Episode, Converter={StaticResource ObjectToVisibilityConverter}}">
                 <HubSection.Background>
-                    <ImageBrush ImageSource="{Binding ImageUrl}" Stretch="UniformToFill"/>
+                    <ImageBrush ImageSource="{Binding Episode.ImageUrl}" Stretch="UniformToFill"/>
                 </HubSection.Background>
                 <DataTemplate>
                     <Grid>
@@ -98,19 +90,29 @@
                                     Opacity=".85" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock Margin="10"                          
                                        Style="{StaticResource HeaderTextBlockStyle}"
-                                       Text="{Binding Name}"
+                                       Text="{Binding Episode.Name}"
                                        TextAlignment="Center"
                                        TextWrapping="WrapWholeWords"/>
                             <TextBlock Margin="10"
                                        Style="{StaticResource SubheaderTextBlockStyle}"
-                                       Text="{Binding Author}"
+                                       Text="{Binding Episode.Author}"
                                        TextAlignment="Center"
                                        TextWrapping="WrapWholeWords"/>
+                            <TextBlock Margin="10"
+                                       Style="{StaticResource SubheaderTextBlockStyle}"
+                                       TextAlignment="Center">
+                                <Run Text="{Binding ElapsedTime, Converter={StaticResource TimeSpanToStringConverter}}"/> | <Run Text="{Binding TotalTime, Converter={StaticResource TimeSpanToStringConverter}}"/>
+                            </TextBlock>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <AppBarButton Icon="Previous"></AppBarButton>
+                                <AppBarButton Icon="Play"></AppBarButton>
+                                <AppBarButton Icon="Next"></AppBarButton>
+                            </StackPanel>
                         </StackPanel>
                     </Grid>
                 </DataTemplate>
             </HubSection>
-            <HubSection x:Uid="Section1Header" Header="Subscriptions">
+            <HubSection x:Uid="Section1Header" Header="Subscriptions" IsHeaderInteractive="True">
                 <DataTemplate>
                     <GridView
                         x:Name="itemGridView"
@@ -131,7 +133,7 @@
                     </GridView>
                 </DataTemplate>
             </HubSection>
-            <HubSection x:Uid="Section3Header" Header="Episodes" Padding="40,40,40,32">
+            <HubSection x:Uid="Section3Header" Header="Episodes" Padding="40,40,40,32" IsHeaderInteractive="True">
                 <DataTemplate>
                     <GridView
                         x:Name="itemGridView"
