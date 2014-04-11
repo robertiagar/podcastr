@@ -49,14 +49,13 @@
         <CommandBar Padding="10,0,10,0" IsSticky="True" IsOpen="{Binding IsOpen}">
             <AppBarButton Icon="Add" Label="Add To Playlist" Command="{Binding AddToPlaylistCommand}"/>
             <AppBarButton Icon="List" Label="Playlist" Command="{Binding ShowPlaylistFlyoutCommand}"/>
-            <AppBarButton Icon="{Binding SelectedEpisode.IsLocal, Converter={StaticResource IsLocalToSymbolConverter}}" 
-                          Command="{Binding SelectedEpisode.ToggleEpsidoeLocationCommand}" 
+            <AppBarButton Icon="{Binding SelectedEpisode.ToggleEpisodeLocationCommand.Icon}" 
+                          Command="{Binding SelectedEpisode.ToggleEpisodeLocationCommand.Command}" 
                           Visibility="{Binding SelectedEpisode, Converter={StaticResource ObjectToVisibilityConverter}}"
-                          Label="{Binding SelectedEpisode.IsLocal, Converter={StaticResource IsLocalToTextConverter}}"/>
+                          Label="{Binding SelectedEpisode.ToggleEpisodeLocationCommand.Label}"/>
             <AppBarButton Icon="Manage" Label="Downloads" Command="{Binding ShowDownloadsFlyoutCommand}"/>
             <CommandBar.SecondaryCommands>
                 <AppBarButton Flyout="{StaticResource AddPodcastFlyout}" Icon="Add" Label="Add Podcast"/>
-                <AppBarButton Icon="Clear" Label="Clear" Command="{Binding ClearPodcastsCommand}"/>
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>
@@ -70,32 +69,42 @@
             </TransitionCollection>
         </Grid.ChildrenTransitions>
         <Hub SectionHeaderClick="Hub_SectionHeaderClick">
+            <Hub.Transitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition/>
+                </TransitionCollection>
+            </Hub.Transitions>
             <Hub.Header>
                 <!-- Back button and page title -->
-                <Grid>
-                    <TextBlock x:Name="pageTitle" Text="{StaticResource AppName}" Style="{StaticResource HeaderTextBlockStyle}" 
+                <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}" Opacity=".85">
+                    <TextBlock x:Name="pageTitle" Margin="15"
+                               Text="{StaticResource AppName}" 
+                               Style="{StaticResource HeaderTextBlockStyle}" 
                                VerticalAlignment="Top" IsHitTestVisible="false" TextWrapping="NoWrap" />
                 </Grid>
             </Hub.Header>
-            <HubSection Width="850" DataContext="{Binding NowPlaying}" 
+            <HubSection Width="1000" DataContext="{Binding NowPlaying}" 
                         VerticalContentAlignment="Center" 
                         HorizontalAlignment="Center" 
                         Visibility="{Binding Episode, Converter={StaticResource ObjectToVisibilityConverter}}">
                 <HubSection.Background>
-                    <ImageBrush ImageSource="{Binding Episode.ImageUrl}" Stretch="UniformToFill"/>
+                    <ImageBrush ImageSource="{Binding Episode.Episode.ImageUrl}" Stretch="UniformToFill"/>
                 </HubSection.Background>
                 <DataTemplate>
                     <Grid>
                         <StackPanel Background="{StaticResource ApplicationPageBackgroundThemeBrush}" 
-                                    Opacity=".85" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    Opacity=".85" 
+                                    HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center">
                             <TextBlock Margin="10"                          
                                        Style="{StaticResource HeaderTextBlockStyle}"
-                                       Text="{Binding Episode.Name}"
+                                       Text="{Binding Episode.Episode.Name}"
                                        TextAlignment="Center"
-                                       TextWrapping="WrapWholeWords"/>
+                                       TextTrimming="CharacterEllipsis"
+                                       TextWrapping="NoWrap"/>
                             <TextBlock Margin="10"
                                        Style="{StaticResource SubheaderTextBlockStyle}"
-                                       Text="{Binding Episode.Author}"
+                                       Text="{Binding Episode.Episode.Author}"
                                        TextAlignment="Center"
                                        TextWrapping="WrapWholeWords"/>
                             <TextBlock Margin="10"
@@ -104,9 +113,8 @@
                                 <Run Text="{Binding ElapsedTime, Converter={StaticResource TimeSpanToStringConverter}}"/> | <Run Text="{Binding TotalTime, Converter={StaticResource TimeSpanToStringConverter}}"/>
                             </TextBlock>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <AppBarButton Icon="Previous"></AppBarButton>
-                                <AppBarButton Icon="Play"></AppBarButton>
-                                <AppBarButton Icon="Next"></AppBarButton>
+                                <AppBarButton Icon="{Binding IsPlaying, Converter={StaticResource IsPlayingToSymbolConverter}}" 
+                                              Command="{Binding PlayCommand}"></AppBarButton>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -146,8 +154,7 @@
                         SelectedItem="{Binding SelectedEpisode, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                         IsSwipeEnabled="True"
                         IsItemClickEnabled="True"
-                        ItemClick="ItemView_ItemClick"
-                        SelectionChanged="itemGridView_SelectionChanged">
+                        ItemClick="ItemView_ItemClick">
                         <GridView.ItemContainerTransitions>
                             <TransitionCollection>
                                 <EntranceThemeTransition/>

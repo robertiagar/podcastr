@@ -93,5 +93,15 @@ namespace PodcastR.WindowsStore.Views
         }
 
         #endregion
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var button = e.OriginalSource as Button;
+            if (button != null)
+            {
+                var podcast = button.DataContext as PodcastViewModel;
+                this.Frame.Navigate(typeof(PodcastPage), podcast);
+            }
+        }
     }
 }

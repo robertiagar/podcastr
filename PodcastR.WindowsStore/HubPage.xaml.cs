@@ -101,14 +101,15 @@ namespace PodcastR.WindowsStore
         /// </summary>
         /// <param name="sender">The Hub that contains the HubSection whose header was clicked.</param>
         /// <param name="e">Event data that describes how the click was initiated.</param>
-        async void Hub_SectionHeaderClick(object sender, HubSectionHeaderClickEventArgs e)
+        void Hub_SectionHeaderClick(object sender, HubSectionHeaderClickEventArgs e)
         {
             HubSection section = e.Section;
-            var podcasts = await PodcastService.GetSubscriptions(0);
-            var episodes = podcasts.SelectMany(p => p.Episodes).Select(ep => new EpisodeViewModel(ep)).OrderByDescending(ep=>ep.Episode.Published).ToList();
+            var viewModel = (MainViewModel)this.DataContext;
+            var podcasts = viewModel.AllPodcasts.OrderBy(p => p.Podcast.Name).ToList();
+            var episodes = podcasts.SelectMany(p => p.Episodes).OrderByDescending(ep => ep.Episode.Published).ToList();
             if (section.Header.Equals("Subscriptions"))
             {
-                this.Frame.Navigate(typeof(PodcastsPage), podcasts.Select(p => new PodcastViewModel(p)).ToList());
+                this.Frame.Navigate(typeof(PodcastsPage), podcasts);
             }
             if (section.Header.Equals("Episodes"))
             {
@@ -134,7 +135,8 @@ namespace PodcastR.WindowsStore
             {
                 //this.Frame.Navigate(typeof(EpisodePage), episode);
                 var viewModel = (MainViewModel)this.DataContext;
-                viewModel.NowPlaying.Episode = episode.Episode;
+                viewModel.NowPlaying.Episode = episode;
+                viewModel.NowPlaying.IsPlaying = true;
                 App.Player.Play(episode);
             }
         }
@@ -161,14 +163,5 @@ namespace PodcastR.WindowsStore
         }
 
         #endregion
-
-        private void itemGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var context = (MainViewModel)this.DataContext;
-            if (context.SelectedEpisode != null)
-                context.IsOpen = true;
-            else
-                context.IsOpen = false;
-        }
     }
 }

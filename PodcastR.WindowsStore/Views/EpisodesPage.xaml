@@ -45,7 +45,11 @@
             SelectionMode="None"
             IsSwipeEnabled="false"
             ItemTemplate="{StaticResource EpisodeTemplate}">
-            
+            <GridView.ItemContainerTransitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition/>
+                </TransitionCollection>
+            </GridView.ItemContainerTransitions>
         </GridView>
 
         <!-- Back button and page title -->

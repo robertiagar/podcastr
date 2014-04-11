@@ -51,17 +51,13 @@ namespace PodcastR.WindowsStore.Common
             Play(episode);
         }
 
-        public static void Play(this MediaElement element, IEnumerable<EpisodeViewModel> episodes)
-        {
-            if (App.Playlist == null)
-                App.Playlist = episodes.ToList();
-            var episode = App.Playlist[0];
-            Play(episode);
-        }
-
         private static void Play(EpisodeViewModel episode)
         {
-
+            foreach (var ep in App.Playlist)
+            {
+                ep.PlayCommand.Label = "Play";
+                ep.PlayCommand.Symbol = Symbol.Play;
+            }
             if (episode.Episode.Path.StartsWith("http://") ||
                 episode.Episode.Path.StartsWith("https://"))
                 PlayFromNetwork(episode);
@@ -80,7 +76,9 @@ namespace PodcastR.WindowsStore.Common
                 IRandomAccessStream stream = await file.OpenAsync(FileAccessMode.Read);
                 App.Player.SetSource(stream, file.ContentType);
                 App.UpdateSystemControls(episode.Episode);
-                _viewModel.NowPlaying.Episode = episode.Episode;
+                _viewModel.NowPlaying.Episode = episode;
+                _viewModel.NowPlaying.Episode.PlayCommand.Symbol = Symbol.Pause;
+                _viewModel.NowPlaying.Episode.PlayCommand.Label = "Pause";
             }
             catch (Exception ex)
             {
@@ -97,7 +95,9 @@ namespace PodcastR.WindowsStore.Common
             App.Position = App.Playlist.IndexOf(episode);
             App.Player.Play();
             App.UpdateSystemControls(episode.Episode);
-            _viewModel.NowPlaying.Episode = episode.Episode;
+            _viewModel.NowPlaying.Episode = episode;
+            _viewModel.NowPlaying.Episode.PlayCommand.Symbol = Symbol.Pause;
+            _viewModel.NowPlaying.Episode.PlayCommand.Label = "Pause";
         }
     }
 }
