@@ -50,6 +50,11 @@
             SelectionMode="None"
             IsSwipeEnabled="false"
             ItemTemplate="{StaticResource EpisodeTemplate}">
+            <GridView.ItemContainerTransitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition/>
+                </TransitionCollection>
+            </GridView.ItemContainerTransitions>
             <GridView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <ItemsWrapGrid GroupPadding="0,0,70,0"/>
@@ -60,11 +65,13 @@
                     <GroupStyle.HeaderTemplate>
                         <DataTemplate>
                             <Grid Margin="0,0,0,2">
-                                <Button Foreground="{ThemeResource ApplicationHeaderForegroundThemeBrush}"
+                                <Button 
+                                    Foreground="{ThemeResource ApplicationHeaderForegroundThemeBrush}"
                                     AutomationProperties.Name="Group Title"
-                                    Style="{StaticResource TextBlockButtonStyle}" >
+                                    Style="{StaticResource TextBlockButtonStyle}"
+                                    Click="Button_Click">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Podcast.Author}" Margin="0,-11,10,10" Style="{StaticResource SubheaderTextBlockStyle}" TextWrapping="NoWrap" />
+                                        <TextBlock Text="{Binding Podcast.Name}" Margin="0,-11,10,10" Style="{StaticResource SubheaderTextBlockStyle}" TextWrapping="NoWrap" />
                                         <TextBlock Text="{StaticResource ChevronGlyph}" FontFamily="Segoe UI Symbol" Margin="0,-11,0,10" Style="{StaticResource SubheaderTextBlockStyle}" TextWrapping="NoWrap" />
                                     </StackPanel>
                                 </Button>

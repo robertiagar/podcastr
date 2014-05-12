@@ -41,6 +41,7 @@ namespace PodcastR.Data.Services
             cancellationTokenSource.Cancel();
             cancellationTokenSource.Dispose();
             cancellationTokenSources.Remove(episode);
+            downloads.Remove(episode);
         }
 
         public static void CancelAllDownloads()
@@ -58,7 +59,7 @@ namespace PodcastR.Data.Services
             get { return downloads.Count; }
         }
 
-        public static async Task<Episode> DownloadPodcastEpisodeAsync(Episode episode, Action<DownloadOperation> callback, CancellationTokenSource cts, Action errorCallback = null)
+        public static async Task<Episode> DownloadPodcastEpisodeAsync(Episode episode, Action<DownloadOperation> callback, Action errorCallback = null)
         {
             var appFolder = await KnownFolders.MusicLibrary.CreateFolderAsync("PodcastR", CreationCollisionOption.OpenIfExists);
             var podcastFolder = await appFolder.CreateFolderAsync(episode.Podcast.Name, CreationCollisionOption.OpenIfExists);
@@ -66,12 +67,13 @@ namespace PodcastR.Data.Services
             {
                 var uri = new Uri(episode.Path);
                 var extension = uri.AbsolutePath.GetExtension();
-                var fileName = (episode.Name + extension).RemoveIllegalPathChars().Replace(":","");
+                var fileName = (episode.Name + extension).RemoveIllegalPathChars().Replace(":", "");
                 var episodeFile = await podcastFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
                 var backgroundDownloader = new BackgroundDownloader();
                 var downloadOperation = backgroundDownloader.CreateDownload(uri, episodeFile);
                 var progress = new Progress<DownloadOperation>(callback);
                 downloads.Add(episode, downloadOperation);
+                var cts = new CancellationTokenSource();
                 cancellationTokenSources.Add(episode, cts);
 
                 await downloadOperation.StartAsync().AsTask(cts.Token, progress);
@@ -90,19 +92,13 @@ namespace PodcastR.Data.Services
             }
         }
 
-        public static async Task ToggleEpisodeLocationAsync(Episode episode, Action<DownloadOperation> callback, CancellationTokenSource cts, Action errorCallback = null)
+
+        public static async Task DeletePodcastEpisodeAsync(Episode episode)
         {
-            if (episode.IsLocal)
-            {
-                var file = await StorageFile.GetFileFromPathAsync(episode.Path);
-                await file.DeleteAsync();
-                episode.Path = episode.WebPath;
-                episode.IsLocal = false;
-            }
-            else
-            {
-                await DownloadPodcastEpisodeAsync(episode, callback, cts, errorCallback);
-            }
+            var file = await StorageFile.GetFileFromPathAsync(episode.Path);
+            await file.DeleteAsync();
+            episode.Path = episode.WebPath;
+            episode.IsLocal = false; ;
         }
     }
 }

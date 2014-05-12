@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using PodcastR.Data.Entities;
 using System;
 using System.Collections.Generic;
@@ -6,22 +7,45 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace PodcastR.WindowsStore.ViewModel
 {
     public class NowPlayingViewModel : ViewModelBase
     {
-        private Episode _NowPlaying;
-        public Episode Episode
+        private bool _IsPlaying;
+        private EpisodeViewModel _Episode;
+        private TimeSpan _ElapsedTime;
+        private TimeSpan _TotalTime;
+
+        public NowPlayingViewModel()
         {
-            get { return _NowPlaying; }
+            this.PlayCommand = new RelayCommand(() => this.Play(), () => this.CanPlay());
+            if (App.Player != null)
+                this.IsPlaying = App.Player.CurrentState == Windows.UI.Xaml.Media.MediaElementState.Playing;
+        }
+
+        public bool IsPlaying
+        {
+            get { return _IsPlaying; }
             set
             {
-                Set<Episode>(() => Episode, ref _NowPlaying, value);
+                Set<bool>(() => IsPlaying, ref _IsPlaying, value);
             }
         }
 
-        private TimeSpan _ElapsedTime;
+        public ICommand PlayCommand { get; private set; }
+
+        public EpisodeViewModel Episode
+        {
+            get { return _Episode; }
+            set
+            {
+                Set<EpisodeViewModel>(() => Episode, ref _Episode, value);
+                ((RelayCommand)PlayCommand).RaiseCanExecuteChanged();
+            }
+        }
+
         public TimeSpan ElapsedTime
         {
             get { return _ElapsedTime; }
@@ -31,7 +55,6 @@ namespace PodcastR.WindowsStore.ViewModel
             }
         }
 
-        private TimeSpan _TotalTime;
         public TimeSpan TotalTime
         {
             get { return _TotalTime; }
@@ -39,6 +62,25 @@ namespace PodcastR.WindowsStore.ViewModel
             {
                 Set<TimeSpan>(() => TotalTime, ref _TotalTime, value);
             }
+        }
+
+        private void Play()
+        {
+            if (App.Player.CurrentState == Windows.UI.Xaml.Media.MediaElementState.Playing)
+            {
+                App.Player.Pause();
+                IsPlaying = false;
+            }
+            else
+            {
+                App.Player.Play();
+                IsPlaying = true;
+            }
+        }
+
+        private bool CanPlay()
+        {
+            return Episode != null;
         }
     }
 }

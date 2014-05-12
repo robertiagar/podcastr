@@ -44,14 +44,17 @@
                        Stretch="UniformToFill" 
                        Width="500" Height="500"
                        AutomationProperties.Name="{Binding Episode.Name}"/>
+                <ProgressBar Maximum="100" Minimum="0" Margin="0,5,0,5"
+                             Value="{Binding Percent, Converter={StaticResource UlongToDoubleConverter}}" 
+                             Visibility="{Binding IsDownloading, Converter={StaticResource BoolToVisibilityConverter}}"/>
                 <StackPanel Orientation="Horizontal">
-                    <AppBarButton Icon="{Binding IsLocal, Converter={StaticResource IsLocalToSymbolConverter}}" 
-                                  Command="{Binding ToggleEpsidoeLocationCommand}" 
+                    <AppBarButton Icon="{Binding ToggleEpisodeLocationCommand.Icon}" 
+                                  Command="{Binding ToggleEpisodeLocationCommand.Command}" 
                                   Visibility="{Binding Episode, Converter={StaticResource ObjectToVisibilityConverter}}"
-                                  Label="{Binding IsLocal, Converter={StaticResource IsLocalToTextConverter}}"/>
-                    <AppBarButton Icon="Play" 
-                                  Command="{Binding PlayCommand}" 
-                                  Label="Play"/>
+                                  Label="{Binding ToggleEpisodeLocationCommand.Label}"/>
+                    <AppBarButton Icon="{Binding PlayCommand.Icon}" 
+                                  Command="{Binding PlayCommand.Command}" 
+                                  Label="{Binding PlayCommand.Label}"/>
                 </StackPanel>
             </StackPanel>
             <Grid Grid.Column="1">

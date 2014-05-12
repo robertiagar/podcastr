@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Networking.BackgroundTransfer;
 using Windows.UI.Popups;
+using Windows.UI.Xaml.Controls;
 
 namespace PodcastR.WindowsStore.ViewModel
 {
@@ -21,10 +22,14 @@ namespace PodcastR.WindowsStore.ViewModel
         public EpisodeViewModel(Episode episode)
         {
             this.Episode = episode;
-            this.CancellationTokenSource = new CancellationTokenSource();
-            this.ToggleEpsidoeLocationCommand = new GalaSoft.MvvmLight.Command.RelayCommand(async () => await this.ToggleEpisodeLocationAsync());
-            this.PlayCommand = new GalaSoft.MvvmLight.Command.RelayCommand(() => App.Player.Play(this));
             this.IsLocal = episode.IsLocal;
+            this.ToggleEpisodeLocationCommand = new SymbolCommand(new GalaSoft.MvvmLight.Command.RelayCommand(async () => await this.ToggleEpisodeLocationAsync()), this.IsLocal ? Symbol.Delete : Symbol.Download, this.IsLocal ? "Delete" : "Download");
+            this.PlayCommand = new SymbolCommand(new GalaSoft.MvvmLight.Command.RelayCommand(() => this.Play()), Symbol.Play, "Play");
+        }
+
+        private void Play()
+        {
+            App.Player.Play(this);
         }
 
         private ulong _Percent;
@@ -34,8 +39,8 @@ namespace PodcastR.WindowsStore.ViewModel
         private bool _IsLocal;
         private BackgroundTransferStatus _Status;
 
-        public ICommand ToggleEpsidoeLocationCommand { get; private set; }
-        public ICommand PlayCommand { get; set; }
+        public SymbolCommand ToggleEpisodeLocationCommand { get; private set; }
+        public SymbolCommand PlayCommand { get; set; }
 
         public Episode Episode { get; set; }
 
@@ -109,8 +114,6 @@ namespace PodcastR.WindowsStore.ViewModel
             }
         }
 
-        public CancellationTokenSource CancellationTokenSource { get; set; }
-
         public void ErrorCallback()
         {
 
@@ -119,34 +122,73 @@ namespace PodcastR.WindowsStore.ViewModel
         private async Task ToggleEpisodeLocationAsync()
         {
             var delete = false;
+            var download = true;
+            var deleteDialog = new MessageDialog(string.Format("Are you sure you want to delete {0} from {1}?\n\nNote: This will delete the file from your local storage, not remove the episode from the feed.", Episode.Name, Episode.Podcast.Name));
+            deleteDialog.Commands.Add(new UICommand("Ok", p =>
+            {
+                delete = true;
+            }));
+            deleteDialog.Commands.Add(new UICommand("Cancel", p =>
+            {
+                delete = false;
+            }));
+            deleteDialog.CancelCommandIndex = 1;
+            deleteDialog.DefaultCommandIndex = 0;
+            deleteDialog.Title = string.Format("Delete?", Episode.Name);
+
+            var cancelDownloadDialog = new MessageDialog(string.Format("Are you sure you want to cancel the download of {0} from {1}?", Episode.Name, Episode.Podcast.Name));
+            cancelDownloadDialog.Commands.Add(new UICommand("Ok", p =>
+            {
+                download = false;
+            }));
+            cancelDownloadDialog.Commands.Add(new UICommand("Cancel", p =>
+            {
+                download = true;
+            }));
+            cancelDownloadDialog.CancelCommandIndex = 1;
+            cancelDownloadDialog.DefaultCommandIndex = 0;
+            cancelDownloadDialog.Title = string.Format("Cancel?", Episode.Name);
+
             if (this.Episode.IsLocal)
             {
-                var dialog = new MessageDialog(string.Format("Are you sure you want to delete {0} from {1}?\n\nNote: This will delete the file from your local storage, not remove the episode from the feed.", Episode.Name, Episode.Podcast.Name));
-                dialog.Commands.Add(new UICommand("Ok", p =>
+                await deleteDialog.ShowAsync();
+                if (delete)
                 {
-                    delete = true;
-                }));
-                dialog.Commands.Add(new UICommand("Cancel", p =>
-                {
-                    delete = false;
-                }));
-                dialog.CancelCommandIndex = 1;
-                dialog.DefaultCommandIndex = 0;
-                dialog.Title = string.Format("Delete?", Episode.Name);
-                await dialog.ShowAsync();
+                    await PodcastDownloaderService.DeletePodcastEpisodeAsync(this.Episode);
+                }
             }
-            if (delete || !this.Episode.IsLocal)
+
+            if (!this.Episode.IsLocal)
             {
-                this.IsDownloading = true;
-                ServiceLocator.Current.GetInstance<MainViewModel>().Downloads.Add(this);
-                await PodcastDownloaderService.ToggleEpisodeLocationAsync(this.Episode,
-                    DownloadCallback,
-                    CancellationTokenSource,
-                    ErrorCallback);
-                this.IsDownloading = false;
-                this.IsLocal = Episode.IsLocal;
-                await ServiceLocator.Current.GetInstance<MainViewModel>().SavePodcastsAsync();
-                ServiceLocator.Current.GetInstance<MainViewModel>().Downloads.Remove(this);
+                if (this.IsDownloading)
+                {
+                    await cancelDownloadDialog.ShowAsync();
+                }
+
+                if (download)
+                {
+                    if (!this.IsDownloading)
+                    {
+                        this.IsDownloading = true;
+                        this.ToggleEpisodeLocationCommand.Symbol = Symbol.Cancel;
+                        this.ToggleEpisodeLocationCommand.Label = "Cancel";
+                        ServiceLocator.Current.GetInstance<MainViewModel>().Downloads.Add(this);
+                        await PodcastDownloaderService.DownloadPodcastEpisodeAsync(this.Episode,
+                            this.DownloadCallback,
+                            this.ErrorCallback);
+                        this.IsDownloading = false;
+                        this.IsLocal = Episode.IsLocal;
+                        this.ToggleEpisodeLocationCommand.Label = Episode.IsLocal ? "Delete" : "Download";
+                        this.ToggleEpisodeLocationCommand.Symbol = Episode.IsLocal ? Symbol.Delete : Symbol.Download;
+                        this.Percent = 0;
+                        await ServiceLocator.Current.GetInstance<MainViewModel>().SavePodcastsAsync();
+                        ServiceLocator.Current.GetInstance<MainViewModel>().Downloads.Remove(this);
+                    }
+                }
+                else
+                {
+                    PodcastDownloaderService.CancelDownload(this.Episode);
+                }
             }
         }
     }

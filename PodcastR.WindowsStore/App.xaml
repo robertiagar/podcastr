@@ -16,6 +16,7 @@
         <conv:IsLocalToSymbolConverter x:Key="IsLocalToSymbolConverter"/>
         <conv:IsLocalToTextConverter x:Key="IsLocalToTextConverter"/>
         <conv:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter"/>
+        <conv:IsPlayingToSymbolConverter x:Key="IsPlayingToSymbolConverter"/>
         <Style  x:Key="RootFrameStyle" TargetType="Frame">
             <Setter Property="Template">
                 <Setter.Value>
@@ -145,7 +146,7 @@
                             <Grid x:Name="grid" Height="40" Margin="0" Width="40">
                                 <Ellipse x:Name="BackgroundEllipse" Fill="{ThemeResource AppBarItemBackgroundThemeBrush}" Height="40" UseLayoutRounding="False" Width="40"/>
                                 <Ellipse x:Name="OutlineEllipse" Height="40" Stroke="{ThemeResource AppBarItemForegroundThemeBrush}" StrokeThickness="2" UseLayoutRounding="False" Width="40"/>
-                                <ContentPresenter x:Name="Content" AutomationProperties.AccessibilityView="Raw" Content="{TemplateBinding Icon}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                <SymbolIcon x:Name="Content" AutomationProperties.AccessibilityView="Raw" Symbol="{Binding ToggleEpisodeLocationCommand.Symbol}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                             </Grid>
                             <Rectangle x:Name="FocusVisualWhite" IsHitTestVisible="False" Opacity="0" StrokeDashOffset="1.5" StrokeEndLineCap="Square" Stroke="{ThemeResource FocusVisualWhiteStrokeThemeBrush}" StrokeDashArray="1,1"/>
                             <Rectangle x:Name="FocusVisualBlack" IsHitTestVisible="False" Opacity="0" StrokeDashOffset="0.5" StrokeEndLineCap="Square" Stroke="{ThemeResource FocusVisualBlackStrokeThemeBrush}" StrokeDashArray="1,1"/>
@@ -154,7 +155,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <DataTemplate x:Key="EpisodeTemplate">
+        <DataTemplate x:Key="EpisodeTemplate" >
             <Grid Height="100" Width="500" Margin="0">
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
@@ -164,13 +165,13 @@
                     <Grid>
                         <Image Source="{Binding Episode.ImageUrl}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Episode.Name}"/>
                         <AppBarButton HorizontalAlignment="Stretch" 
-                                      Label="AppBarButton"
                                       Margin="0" 
                                       VerticalAlignment="Stretch" 
                                       IsCompact="True" 
-                                      Icon="{Binding IsLocal, Converter={StaticResource IsLocalToSymbolConverter}}" 
                                       Style="{StaticResource OverlayAppBar}"
-                                      Command="{Binding ToggleEpsidoeLocationCommand}"/>
+                                      Icon="{Binding ToggleEpisodeLocationCommand.Icon}" 
+                                      Label="{Binding ToggleEpisodeLocationCommand.Label}"
+                                      Command="{Binding ToggleEpisodeLocationCommand.Command}"/>
                     </Grid>
                 </Border>
                 <StackPanel Grid.Column="1" Margin="5">
