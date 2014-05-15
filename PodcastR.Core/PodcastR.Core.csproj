@@ -36,7 +36,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Entities\Episode.cs" />
     <Compile Include="Entities\Podcast.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
