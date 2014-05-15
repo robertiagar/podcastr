@@ -1,4 +1,4 @@
-﻿using Microsoft.WindowsAzure.MobileServices;
+﻿using MicrosoftAzure.MobileServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,7 @@ namespace PodcastR.AzureMobileService
 
         static MobileService()
         {
-            m_mobileService = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient("https://podcastr.azure-mobile.net/", "EwKwZVDKoqoIFjgiRhUxRPiscVfeel63");
+            m_mobileService = new MicrosoftAzure.MobileServices.MobileServiceClient("https://podcastr.azure-mobile.net/", "EwKwZVDKoqoIFjgiRhUxRPiscVfeel63");
         }
 
         public static async Task LoginAsync(SelectedLogin login)

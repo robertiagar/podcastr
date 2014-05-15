@@ -1,12 +1,10 @@
-﻿using PodcastR.Data.Entities;
-using PodcastR.WindowsStore.Common;
-using PodcastR.WindowsStore.Data;
-using PodcastR.WindowsStore.ViewModel;
+﻿using PodcastR.Common;
+using PodcastR.Core.Entities;
+using PodcastR.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -17,11 +15,12 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using PodcastR.ViewModel;
 
 
 // The Item Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234232
 
-namespace PodcastR.WindowsStore
+namespace PodcastR
 {
     /// <summary>
     /// A page that displays details for a single item within a group.

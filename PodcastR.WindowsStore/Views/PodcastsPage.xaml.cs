@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using PodcastR.WindowsStore.Common;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -13,11 +11,12 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using PodcastR.WindowsStore.ViewModel;
+using PodcastR.Common;
+using PodcastR.ViewModel;
 
 // The Grouped Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234231
 
-namespace PodcastR.WindowsStore.Views
+namespace PodcastR
 {
     /// <summary>
     /// A page that displays a grouped collection of items.

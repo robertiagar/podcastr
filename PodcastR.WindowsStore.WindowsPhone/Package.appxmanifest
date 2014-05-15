@@ -8,7 +8,7 @@
   <mp:PhoneIdentity PhoneProductId="7340053a-6920-4ca2-aa09-88a950e68c66" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>PodcastR.WindowsStore.WindowsPhone</DisplayName>
+    <DisplayName>PodcastRWindowsPhone</DisplayName>
     <PublisherDisplayName>Robert</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -25,12 +25,12 @@
   <Applications>
     <Application Id="App"
         Executable="$targetnametoken$.exe"
-        EntryPoint="PodcastR.WindowsStore.WindowsPhone.App">
+        EntryPoint="PodcastRWindowsPhone.App">
         <m3:VisualElements
-            DisplayName="PodcastR.WindowsStore.WindowsPhone"
+            DisplayName="PodcastRWindowsPhone"
             Square150x150Logo="Assets\Logo.png"
             Square44x44Logo="Assets\SmallLogo.png"
-            Description="PodcastR.WindowsStore.WindowsPhone"
+            Description="PodcastRWindowsPhone"
             ForegroundText="light"
             BackgroundColor="transparent">
             <m3:DefaultTile Wide310x150Logo="Assets\WideLogo.png" Square71x71Logo="Assets\Square71x71Logo.png"/>
