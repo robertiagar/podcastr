@@ -23,10 +23,8 @@ namespace PodcastR.ViewModel
         {
             this.Episode = episode;
             this.IsLocal = episode.IsLocal;
-#if WINDOWS_APP
             this.ToggleEpisodeLocationCommand = new SymbolCommand(new GalaSoft.MvvmLight.Command.RelayCommand(async () => await this.ToggleEpisodeLocationAsync()), this.IsLocal ? Symbol.Delete : Symbol.Download, this.IsLocal ? "Delete" : "Download");
             this.PlayCommand = new SymbolCommand(new GalaSoft.MvvmLight.Command.RelayCommand(() => this.Play()), Symbol.Play, "Play");
-#endif
         }
 
         private void Play()
