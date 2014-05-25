@@ -17,6 +17,16 @@ namespace PodcastR.WebApi
             config.SuppressDefaultHostAuthentication();
             config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
 
+            //remove xml handler
+            var matches = config.Formatters
+                                .Where(f => f.SupportedMediaTypes
+                                             .Where(m => m.MediaType.ToString() == "application/xml" ||
+                                                         m.MediaType.ToString() == "text/xml")
+                                             .Count() > 0)
+                                .ToList();
+            foreach (var match in matches)
+                config.Formatters.Remove(match);
+
             // Web API routes
             config.MapHttpAttributeRoutes();
 

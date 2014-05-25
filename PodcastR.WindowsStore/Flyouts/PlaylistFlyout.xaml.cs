@@ -1,11 +1,11 @@
-﻿using PodcastR.Data.Entities;
-using PodcastR.WindowsStore.Common;
-using PodcastR.WindowsStore.ViewModel;
+﻿using PodcastR.Common;
+using PodcastR.Extensions;
+using PodcastR.Core.Entities;
+using PodcastR.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 // The Settings Flyout item template is documented at http://go.microsoft.com/fwlink/?LinkId=273769
 
-namespace PodcastR.WindowsStore.Flyouts
+namespace PodcastR.Flyouts
 {
     public sealed partial class PlaylistFlyout : SettingsFlyout
     {

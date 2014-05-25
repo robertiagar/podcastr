@@ -153,3 +153,5 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 /packages
+PodcastR.WebApi/App_Data/aspnet-PodcastR.WebApi-20140512111802.mdf
+PodcastR.WebApi/App_Data/aspnet-PodcastR.WebApi-20140512111802_log.ldf
