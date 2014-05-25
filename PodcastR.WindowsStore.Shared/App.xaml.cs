@@ -24,6 +24,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using Windows.Storage;
 
 // The Hub App template is documented at http://go.microsoft.com/fwlink/?LinkId=321221
 
@@ -48,6 +49,7 @@ namespace PodcastR
             this.InitializeComponent();
             this.Suspending += OnSuspending;
         }
+
         public static MediaElement Player { get; set; }
         public static IList<EpisodeViewModel> Playlist { get; set; }
         public static int Position { get; set; }
