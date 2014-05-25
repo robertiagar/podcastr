@@ -31,9 +31,8 @@ namespace PodcastR.WebApi.Core.Entities
         {
             XNamespace itunes = "http://www.itunes.com/dtds/podcast-1.0.dtd";
             Name = element.Element("title").Value;
-            Path = WebPath = element.Element("enclosure").Attribute("url").Value;
+            WebPath = element.Element("enclosure").Attribute("url").Value;
             Author = element.Element(itunes + "author").Value;
-            IsLocal = false;
             Published = ToDateTime(element.Element("pubDate").Value);
             ImageUrl = element.Element(itunes + "image") != null ? element.Element(itunes + "image").Attribute("href").Value : podcast.ImageUrl;
             Summary = element.Element(itunes + "summary") != null ? element.Element(itunes + "summary").Value : null;
@@ -43,9 +42,7 @@ namespace PodcastR.WebApi.Core.Entities
 
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Path { get; set; }
         public string WebPath { get; set; }
-        public bool IsLocal { get; set; }
         public string Author { get; set; }
         public DateTime Published { get; set; }
         public string ImageUrl { get; set; }

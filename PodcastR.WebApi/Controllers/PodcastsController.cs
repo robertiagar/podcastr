@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using PodcastR.WebApi.Core.Entities;
+using PodcastR.WebApi.Infrastructure;
 using PodcastR.WebApi.Models;
 using System;
 using System.Collections.Generic;
@@ -15,57 +16,38 @@ using System.Xml.Linq;
 namespace PodcastR.WebApi.Controllers
 {
     [Authorize]
-    public class PodcastsController : ApiController
+    [RoutePrefix("api")]
+    public class PodcastsController : BaseApiController
     {
-        private ApplicationDbContext _dbContext;
-        private ApplicationUserManager _userManager;
-
-        public PodcastsController()
-        {
-        }
-
-        public PodcastsController(ApplicationDbContext context, ApplicationUserManager manager)
-        {
-            DbContext = context;
-            UserManager = manager;
-        }
-
-        public ApplicationDbContext DbContext
-        {
-            get
-            {
-                return _dbContext ?? Request.GetOwinContext().Get<ApplicationDbContext>();
-            }
-            private set
-            {
-                _dbContext = value;
-            }
-        }
-
-        public ApplicationUserManager UserManager
-        {
-            get
-            {
-                return _userManager ?? Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-            private set
-            {
-                _userManager = value;
-            }
-        }
-
         /// <summary>
-        /// Gets the current users Podcast.
+        /// Gets the current users Podcasts.
         /// </summary>
         /// <returns>A collection of <see cref="Podcast">Podcasts</see>.</returns>
         public async Task<IEnumerable<Podcast>> Get()
         {
             var user = (await UserManager.FindByIdAsync(User.Identity.GetUserId()));
 
-            return await DbContext.Podcasts.Where(p => p.User.Id == user.Id).ToListAsync();
+            return await DbContext.Podcasts.Where(p => p.Users.Contains(user)).ToListAsync();
         }
 
-        public async Task<IHttpActionResult> Post(string podcastUrl)
+        public async Task<Podcast> Get(int id)
+        {
+            return await DbContext.Podcasts.Where(p => p.Id == id).SingleOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Podcast>> Get(string name)
+        {
+            return await DbContext.Podcasts.Where(p => p.Name.ToLower().Contains(name.ToLower())).ToListAsync();
+        }
+
+        [Route("LatestEpisodes")]
+        public async Task<IEnumerable<Episode>> GetLatestEpisodes(int podcastId, DateTime lastEpisodeDate)
+        {
+            var podcast = await DbContext.Podcasts.Where(p => p.Id == podcastId).SingleOrDefaultAsync();
+            return podcast.Episodes.Where(e => e.Published > lastEpisodeDate).ToList();
+        }
+
+        public async Task<IHttpActionResult> Post([FromBody]string podcastUrl)
         {
             if (string.IsNullOrEmpty(podcastUrl))
             {
@@ -100,44 +82,54 @@ namespace PodcastR.WebApi.Controllers
                     DateAdded = DateTime.Now,
                 };
 
-                var episodes = new List<Episode>();
+                var existingPodcast = DbContext.Podcasts.Where(p => p.Name == podcast.Name && p.FeedUrl == podcast.FeedUrl).SingleOrDefault();
 
-                foreach (var element in elements)
+                if (existingPodcast == null)
                 {
-                    var episode = new Episode(element, podcast);
-                    episodes.Add(episode);
-                }
-                podcast.Episodes = episodes.OrderByDescending(episode => episode.Published).ToList();
 
-                DbContext.Podcasts.Add(podcast);
-                var x = await DbContext.SaveChangesAsync();
+                    var episodes = new List<Episode>();
 
-                user.Podcasts.Add(podcast);
-                var y = await UserManager.UpdateAsync(user);
+                    foreach (var element in elements)
+                    {
+                        var episode = new Episode(element, podcast);
+                        episodes.Add(episode);
+                    }
+                    podcast.Episodes = episodes.OrderByDescending(episode => episode.Published).ToList();
 
-                if (x != 0 && y.Succeeded)
-                {
-                    return Json<Podcast>(podcast);
+                    DbContext.Podcasts.Add(podcast);
+                    var x = await DbContext.SaveChangesAsync();
+
+                    user.Podcasts.Add(podcast);
+                    var y = await UserManager.UpdateAsync(user);
+
+                    if (x != 0 && y.Succeeded)
+                    {
+                        return Json<Podcast>(podcast);
+                    }
+                    else
+                    {
+                        return BadRequest("Error saving podcast");
+                    }
                 }
                 else
                 {
-                    return BadRequest("error saving podcast");
+                    user.Podcasts.Add(existingPodcast);
+
+                    var y = await UserManager.UpdateAsync(user);
+                    if (y.Succeeded)
+                    {
+                        return Json<Podcast>(existingPodcast);
+                    }
+                    else
+                    {
+                        return BadRequest("Error saving podcast");
+                    }
                 }
             }
             catch
             {
                 return InternalServerError(new ApplicationException("Error processing podcast url."));
             }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                UserManager.Dispose();
-                DbContext.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

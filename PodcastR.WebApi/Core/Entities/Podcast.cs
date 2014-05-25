@@ -27,6 +27,6 @@ namespace PodcastR.WebApi.Core.Entities
         public virtual IList<Episode> Episodes { get; set; }
 
         [JsonIgnore]
-        public virtual ApplicationUser User { get; set; }
+        public virtual IList<ApplicationUser> Users { get; set; }
     }
 }
