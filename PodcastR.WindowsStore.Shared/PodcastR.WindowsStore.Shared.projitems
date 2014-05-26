@@ -9,6 +9,8 @@
     <Import_RootNamespace>PodcastR</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Login\Account.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Login\Token.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -26,17 +28,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\TimeSpanToStringConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\UlongToDoubleConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\MediaElementExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IPodcastsService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\PodcastDownloaderService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\PodcastService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\PodcastsService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\SettingsService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EpisodeViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MainViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NowPlayingViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PodcastViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\StickyAppBarViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ViewModelLocator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WebServices\Interfaces\IPodcastService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WebServices\PodcastRWebClient.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WebServices\PodcastService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="$(MSBuildThisFileDirectory)App.xaml">

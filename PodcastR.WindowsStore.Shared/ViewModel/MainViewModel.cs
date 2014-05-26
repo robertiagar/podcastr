@@ -78,7 +78,10 @@ namespace PodcastR.ViewModel
 
         public async Task LoadPodcastsAsync()
         {
-            allPodcasts = (await PodcastService.GetSubscriptions(0)).Select(p => new PodcastViewModel(p)).ToList();
+            var podcastsService = new PodcastsService();
+
+            //allPodcasts = (await PodcastService.GetSubscriptions(0)).Select(p => new PodcastViewModel(p)).ToList();
+            allPodcasts = (await podcastsService.GetPodcastsAsync()).Select(p => new PodcastViewModel(p)).ToList();
             if (allPodcasts != null)
             {
                 var allEpisodes = allPodcasts.SelectMany(p => p.Episodes).OrderByDescending(e => e.Episode.Published).Take(12).ToList();
@@ -123,28 +126,32 @@ namespace PodcastR.ViewModel
 
         public async Task AddPodcastAsync()
         {
-            var podcast = await PodcastService.LoadPodcastAsync(FeedUri);
-            var podcastVm = new PodcastViewModel(podcast);
-            allPodcasts.Add(podcastVm);
-            _podcasts.Add(podcastVm);
-            var allEpisodes = allPodcasts.SelectMany(p => p.Episodes).ToList();
-
-            foreach (var episode in podcast.Episodes.OrderBy(e => e.Published).ToList())
+            var podcastsService = new PodcastsService();
+            var podcast = await podcastsService.GetPodcastAsync(FeedUri);
+            if (podcast != null)
             {
-                allEpisodes.Add(new EpisodeViewModel(episode));
+                var podcastVm = new PodcastViewModel(podcast);
+                allPodcasts.Add(podcastVm);
+                _podcasts.Add(podcastVm);
+                var allEpisodes = allPodcasts.SelectMany(p => p.Episodes).ToList();
+
+                foreach (var episode in podcast.Episodes.OrderBy(e => e.Published).ToList())
+                {
+                    allEpisodes.Add(new EpisodeViewModel(episode));
+                }
+                allEpisodes = allEpisodes.OrderByDescending(e => e.Episode.Published).ToList();
+
+                var episodesNotDisplayed = allEpisodes.Take(12).Except(_episodes).ToList();
+                var newEpisodesCount = episodesNotDisplayed.Count;
+
+                foreach (var episode in episodesNotDisplayed)
+                {
+                    _episodes.Insert(episodesNotDisplayed.Count - newEpisodesCount, episode);
+                    newEpisodesCount--;
+                }
+
+                await SavePodcastsAsync();
             }
-            allEpisodes = allEpisodes.OrderByDescending(e => e.Episode.Published).ToList();
-
-            var episodesNotDisplayed = allEpisodes.Take(12).Except(_episodes).ToList();
-            var newEpisodesCount = episodesNotDisplayed.Count;
-
-            foreach (var episode in episodesNotDisplayed)
-            {
-                _episodes.Insert(episodesNotDisplayed.Count - newEpisodesCount, episode);
-                newEpisodesCount--;
-            }
-
-            await SavePodcastsAsync();
         }
 
         public async Task SavePodcastsAsync()

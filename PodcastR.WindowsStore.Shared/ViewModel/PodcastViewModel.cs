@@ -20,6 +20,7 @@ namespace PodcastR.ViewModel
             var episodes = podcast.Episodes.Select(ep => new EpisodeViewModel(ep));
             foreach (var episode in episodes)
             {
+                episode.Episode.Podcast = podcast;
                 _episodes.Add(episode);
             }
         }

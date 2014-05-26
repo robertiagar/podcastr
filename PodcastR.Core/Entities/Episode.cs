@@ -20,7 +20,7 @@ namespace PodcastR.Core.Entities
         {
             XNamespace itunes = "http://www.itunes.com/dtds/podcast-1.0.dtd";
             Name = element.Element("title").Value;
-            Path = WebPath = element.Element("enclosure").Attribute("url").Value;
+            WebPath = WebPath = element.Element("enclosure").Attribute("url").Value;
             Author = element.Element(itunes + "author").Value;
             IsLocal = false;
             Published = element.Element("pubDate").Value.ToDateTime();
@@ -31,7 +31,6 @@ namespace PodcastR.Core.Entities
         }
 
         public string Name { get; set; }
-        public string Path { get; set; }
         public string WebPath { get; set; }
         public bool IsLocal { get; set; }
         public string Author { get; set; }

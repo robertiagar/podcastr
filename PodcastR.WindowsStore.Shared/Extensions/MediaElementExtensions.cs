@@ -58,8 +58,8 @@ namespace PodcastR.Extensions
                 ep.PlayCommand.Label = "Play";
                 ep.PlayCommand.Symbol = Symbol.Play;
             }
-            if (episode.Episode.Path.StartsWith("http://") ||
-                episode.Episode.Path.StartsWith("https://"))
+            if (episode.Episode.WebPath.StartsWith("http://") ||
+                episode.Episode.WebPath.StartsWith("https://"))
                 PlayFromNetwork(episode);
             else
                 PlayLocalEpisode(episode);
@@ -72,7 +72,7 @@ namespace PodcastR.Extensions
         {
             try
             {
-                var file = await StorageFile.GetFileFromPathAsync(episode.Episode.Path);
+                var file = await StorageFile.GetFileFromPathAsync(episode.Episode.WebPath);
                 IRandomAccessStream stream = await file.OpenAsync(FileAccessMode.Read);
                 App.Player.SetSource(stream, file.ContentType);
                 App.UpdateSystemControls(episode.Episode);
@@ -91,7 +91,7 @@ namespace PodcastR.Extensions
 
         private static void PlayFromNetwork(EpisodeViewModel episode)
         {
-            App.Player.Source = new Uri(episode.Episode.Path);
+            App.Player.Source = new Uri(episode.Episode.WebPath);
             App.Position = App.Playlist.IndexOf(episode);
             App.Player.Play();
             App.UpdateSystemControls(episode.Episode);

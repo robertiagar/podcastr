@@ -65,7 +65,7 @@ namespace PodcastR.Services
             var podcastFolder = await appFolder.CreateFolderAsync(episode.Podcast.Name, CreationCollisionOption.OpenIfExists);
             try
             {
-                var uri = new Uri(episode.Path);
+                var uri = new Uri(episode.WebPath);
                 var extension = uri.AbsolutePath.GetExtension();
                 var fileName = (episode.Name + extension).RemoveIllegalPathChars().Replace(":", "");
                 var episodeFile = await podcastFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
@@ -81,7 +81,7 @@ namespace PodcastR.Services
                 downloads.Remove(episode);
                 cancellationTokenSources.Remove(episode);
                 episode.IsLocal = true;
-                episode.Path = episodeFile.Path;
+                episode.WebPath = episodeFile.Path;
                 return episode;
             }
             catch
@@ -95,9 +95,9 @@ namespace PodcastR.Services
 
         public static async Task DeletePodcastEpisodeAsync(Episode episode)
         {
-            var file = await StorageFile.GetFileFromPathAsync(episode.Path);
+            var file = await StorageFile.GetFileFromPathAsync(episode.WebPath);
             await file.DeleteAsync();
-            episode.Path = episode.WebPath;
+            episode.WebPath = episode.WebPath;
             episode.IsLocal = false; ;
         }
     }

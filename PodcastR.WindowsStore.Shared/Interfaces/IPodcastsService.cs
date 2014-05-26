@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PodcastR.Interfaces
 {
-    public interface IPodcastService
+    public interface IPodcastsService
     {
         Task<IEnumerable<Podcast>> GetPodcastsAsync();
         Task<Podcast> GetPodcastAsync(int podcastId);
