@@ -26,9 +26,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PodcastR.Core", "PodcastR.C
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		PodcastR.WindowsStore.Shared\PodcastR.WindowsStore.Shared.projitems*{e8ade6b2-5a9a-4062-8cef-75e1d263394c}*SharedItemsImports = 4
-		PodcastR.WindowsStore.Shared\PodcastR.WindowsStore.Shared.projitems*{1f500159-f468-4ba2-bfab-262e2bd2ee8b}*SharedItemsImports = 4
-		PodcastR.WindowsStore.Shared\PodcastR.WindowsStore.Shared.projitems*{3ad4703f-8f5b-4f96-ba68-e405ca537466}*SharedItemsImports = 13
+		PodcastR.Shared\PodcastR.WindowsStore.Shared.projitems*{e8ade6b2-5a9a-4062-8cef-75e1d263394c}*SharedItemsImports = 4
+		PodcastR.Shared\PodcastR.WindowsStore.Shared.projitems*{1f500159-f468-4ba2-bfab-262e2bd2ee8b}*SharedItemsImports = 4
+		PodcastR.Shared\PodcastR.WindowsStore.Shared.projitems*{3ad4703f-8f5b-4f96-ba68-e405ca537466}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
