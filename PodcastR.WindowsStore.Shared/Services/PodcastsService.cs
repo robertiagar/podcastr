@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PodcastR.Common;
 using PodcastR.Core.Entities;
 using PodcastR.Interfaces;
 using PodcastR.ViewModel;
@@ -13,25 +14,19 @@ namespace PodcastR.Services
     public class PodcastsService : IPodcastsService
     {
         private static HttpClient _client;
-        private static bool canCall = false;
-        private static string applicationUri;
+        private ISettingsService service;
 
-        public PodcastsService()
+        public PodcastsService(ISettingsService service)
         {
+            this.service = service;
             _client = new HttpClient();
-            applicationUri = "http://localhost:13754/";
-            string token = SettingsService.AccessToken;
-            if (token != null)
-            {
-                _client.DefaultRequestHeaders.Clear();
-                _client.DefaultRequestHeaders.Add("Authorization", string.Format("Bearer {0}", token));
-                canCall = true;
-            }
+            _client.DefaultRequestHeaders.Clear();
+            _client.DefaultRequestHeaders.Add("Authorization", string.Format("Bearer {0}", service.AccessToken));
         }
 
         public async Task<IEnumerable<Podcast>> GetPodcastsAsync()
         {
-            var podcastsJson = await _client.GetStringAsync(new Uri(applicationUri + "api/Podcasts"));
+            var podcastsJson = await _client.GetStringAsync(new Uri(Constants.ApplicationUri + "api/Podcasts"));
 
             var podcasts = JsonConvert.DeserializeObject<IEnumerable<Podcast>>(podcastsJson);
 
@@ -40,7 +35,7 @@ namespace PodcastR.Services
 
         public async Task<Podcast> GetPodcastAsync(int podcastId)
         {
-            var podcastsJson = await _client.GetStringAsync(new Uri(applicationUri + "api/Podcasts/" + podcastId));
+            var podcastsJson = await _client.GetStringAsync(new Uri(Constants.ApplicationUri + "api/Podcasts/" + podcastId));
 
             var podcast = JsonConvert.DeserializeObject<Podcast>(podcastsJson);
 
@@ -51,7 +46,7 @@ namespace PodcastR.Services
         {
             var content = new HttpStringContent(string.Format("\"{0}\"", podcastUrl), UnicodeEncoding.Utf8, "application/json");
 
-            var response = await _client.PostAsync(new Uri(applicationUri + "api/Podcasts"), content);
+            var response = await _client.PostAsync(new Uri(Constants.ApplicationUri + "api/Podcasts"), content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -67,7 +62,17 @@ namespace PodcastR.Services
 
         public async Task<IEnumerable<Episode>> GetLatestEpisodesAsync(int podcastId, DateTime lastEpisodeDate)
         {
-            await Task.Delay(1);
+            var response = await _client.GetAsync(new Uri(Constants.ApplicationUri + "api/LatestEpisodes?" + string.Format("podcastId={0}&lastEpisodeDate=", podcastId, lastEpisodeDate)));
+
+            if (response.IsSuccessStatusCode)
+            {
+                var episodesJson = await response.Content.ReadAsStringAsync();
+
+                var episodes = JsonConvert.DeserializeObject<IEnumerable<Episode>>(episodesJson);
+
+                return episodes;
+            }
+
             return null;
         }
     }

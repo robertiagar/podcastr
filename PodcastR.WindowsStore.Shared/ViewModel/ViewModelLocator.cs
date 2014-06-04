@@ -15,6 +15,8 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
+using PodcastR.Interfaces;
+using PodcastR.Services;
 
 namespace PodcastR.ViewModel
 {
@@ -31,18 +33,23 @@ namespace PodcastR.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            ////if (ViewModelBase.IsInDesignModeStatic)
-            ////{
-            ////    // Create design time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DesignDataService>();
-            ////}
+            if (ViewModelBase.IsInDesignModeStatic)
+            {
+                // Create design time view services and models
+                SimpleIoc.Default.Register<IPodcastsService, PodcastsService>();
+                SimpleIoc.Default.Register<IAuthenticationService, AuthenticationService>();
+                SimpleIoc.Default.Register<ISettingsService, SettingsService>();
+            }
             ////else
             ////{
             ////    // Create run time view services and models
             ////    SimpleIoc.Default.Register<IDataService, DataService>();
             ////}
 
+           
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<LoginViewModel>();
+            SimpleIoc.Default.Register<RegisterViewModel>();
         }
 
         public MainViewModel Main
@@ -52,7 +59,23 @@ namespace PodcastR.ViewModel
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
             }
         }
-        
+
+        public LoginViewModel Login
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<LoginViewModel>();
+            }
+        }
+
+        public RegisterViewModel Register
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<RegisterViewModel>();
+            }
+        }
+
         public static void Cleanup()
         {
             // TODO Clear the ViewModels

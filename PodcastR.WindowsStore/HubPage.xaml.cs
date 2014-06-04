@@ -73,7 +73,6 @@ namespace PodcastR
             if (this.DataContext != null && !viewModel.Podcasts.Any())
             {
                 await viewModel.LoadPodcastsAsync();
-                await viewModel.LoadNewEpisodesAsync();
                 await viewModel.SavePodcastsAsync();
             }
 

@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 #if WINDOWS_APP
-using PodcastRFlyouts;
+using PodcastR.Flyouts;
 #endif
 using PodcastR.Services;
+using PodcastR.Interfaces;
+
 
 namespace PodcastR.ViewModel
 {
@@ -35,8 +37,9 @@ namespace PodcastR.ViewModel
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public MainViewModel()
+        public MainViewModel(IPodcastsService service)
         {
+            this.podcastsService = service;
             this._podcasts = new ObservableCollection<PodcastViewModel>();
             this._episodes = new ObservableCollection<EpisodeViewModel>();
             this._downloads = new ObservableCollection<EpisodeViewModel>();
@@ -78,8 +81,6 @@ namespace PodcastR.ViewModel
 
         public async Task LoadPodcastsAsync()
         {
-            var podcastsService = new PodcastsService();
-
             //allPodcasts = (await PodcastService.GetSubscriptions(0)).Select(p => new PodcastViewModel(p)).ToList();
             allPodcasts = (await podcastsService.GetPodcastsAsync()).Select(p => new PodcastViewModel(p)).ToList();
             if (allPodcasts != null)
@@ -126,7 +127,6 @@ namespace PodcastR.ViewModel
 
         public async Task AddPodcastAsync()
         {
-            var podcastsService = new PodcastsService();
             var podcast = await podcastsService.GetPodcastAsync(FeedUri);
             if (podcast != null)
             {
@@ -191,6 +191,7 @@ namespace PodcastR.ViewModel
 
         private NowPlayingViewModel _NowPlaying;
         private IList<PodcastViewModel> allPodcasts;
+        private IPodcastsService podcastsService;
 
         public NowPlayingViewModel NowPlaying
         {
@@ -249,7 +250,6 @@ namespace PodcastR.ViewModel
             downloadsFlyout.ShowIndependent();
         }
 #endif
-
         public IList<PodcastViewModel> AllPodcasts
         {
             get { return allPodcasts; }

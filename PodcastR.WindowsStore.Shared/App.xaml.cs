@@ -25,6 +25,10 @@ using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 using Windows.Storage;
+using PodcastR.Views;
+using GalaSoft.MvvmLight.Ioc;
+using PodcastR.Interfaces;
+using PodcastR.Services;
 
 // The Hub App template is documented at http://go.microsoft.com/fwlink/?LinkId=321221
 
@@ -69,7 +73,9 @@ namespace PodcastR
 #endif
 
             Frame rootFrame = Window.Current.Content as Frame;
-
+            SimpleIoc.Default.Register<IPodcastsService, PodcastsService>();
+            SimpleIoc.Default.Register<IAuthenticationService, AuthenticationService>();
+            SimpleIoc.Default.Register<ISettingsService, SettingsService>();
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
 
@@ -77,6 +83,8 @@ namespace PodcastR
             {
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();
+
+                SimpleIoc.Default.Register<INavigationService>(() => { return new NavigationService(rootFrame); });
                 //Associate the frame with a SuspensionManager key                                
                 SuspensionManager.RegisterFrame(rootFrame, "AppFrame");
                 // Set the default language
@@ -122,7 +130,7 @@ namespace PodcastR
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                if (!rootFrame.Navigate(typeof(HubPage), e.Arguments))
+                if (!rootFrame.Navigate(typeof(SplashPage), e.Arguments))
                 {
                     throw new Exception("Failed to create initial page");
                 }

@@ -9,8 +9,11 @@
     <Import_RootNamespace>PodcastR</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Login\Account.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Login\Token.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IAuthenticationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\INavigationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ISettingsService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Login\LoginAccount.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -29,14 +32,20 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\UlongToDoubleConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\MediaElementExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IPodcastsService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Login\RegisterAccount.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Login\TokenResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\AuthenticationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\NavigationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\PodcastDownloaderService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\PodcastService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\PodcastsService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\SettingsService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EpisodeViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\LoginViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MainViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NowPlayingViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PodcastViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\RegisterViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\StickyAppBarViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ViewModelLocator.cs" />
   </ItemGroup>
