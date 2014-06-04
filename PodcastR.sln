@@ -16,9 +16,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{C884C8
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PodcastR.Clients", "PodcastR.Clients", "{15110350-4FFE-4AAF-9127-7115071C1E75}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "PodcastR.Shared", "PodcastR.WindowsStore.Shared\PodcastR.Shared.shproj", "{3AD4703F-8F5B-4F96-BA68-E405CA537466}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "PodcastR.Shared", "PodcastR.Shared\PodcastR.Shared.shproj", "{3AD4703F-8F5B-4F96-BA68-E405CA537466}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PodcastR.WindowsPhone", "PodcastR.WindowsStore.WindowsPhone\PodcastR.WindowsPhone.csproj", "{E8ADE6B2-5A9A-4062-8CEF-75E1D263394C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PodcastR.WindowsPhone", "PodcastR.WindowsPhone\PodcastR.WindowsPhone.csproj", "{E8ADE6B2-5A9A-4062-8CEF-75E1D263394C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PodcastR.WebApi", "PodcastR.WebApi\PodcastR.WebApi.csproj", "{A9C69F06-F392-465A-9DD8-8C318EAAD245}"
 EndProject

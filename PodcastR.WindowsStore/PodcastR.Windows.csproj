@@ -250,7 +250,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
-  <Import Project="..\PodcastR.WindowsStore.Shared\PodcastR.WindowsStore.Shared.projitems" Label="Shared" />
+  <Import Project="..\PodcastR.Shared\PodcastR.WindowsStore.Shared.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
   </PropertyGroup>
