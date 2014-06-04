@@ -16,13 +16,12 @@
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="PodcastRApp">
       <m2:VisualElements DisplayName="Robert's PodcastR" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="PodcastR" ForegroundText="light" BackgroundColor="#464646" ToastCapable="true">
-        <m2:LockScreen Notification="badge" BadgeLogo="Assets\BadgeLogo.png" />
         <m2:SplashScreen Image="Assets\SplashScreen.png" />
       </m2:VisualElements>
       <Extensions>
-        <Extension Category="windows.backgroundTasks" StartPage="BackgroundTasks\UpdatePodcastsTask.cs">
+        <Extension Category="windows.backgroundTasks" EntryPoint="PodcastRApp">
           <BackgroundTasks>
-            <Task Type="pushNotification" />
+            <Task Type="audio" />
           </BackgroundTasks>
         </Extension>
       </Extensions>
