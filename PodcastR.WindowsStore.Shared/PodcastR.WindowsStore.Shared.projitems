@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IAuthenticationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\INavigationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\INotificationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ISettingsService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Login\LoginAccount.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
@@ -36,6 +37,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Login\TokenResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\AuthenticationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\NavigationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\NotificationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\PodcastDownloaderService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\PodcastService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\PodcastsService.cs" />

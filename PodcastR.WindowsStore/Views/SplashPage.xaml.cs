@@ -33,7 +33,7 @@ namespace PodcastR.Views
             navigation = SimpleIoc.Default.GetInstance<INavigationService>();
             authentication = SimpleIoc.Default.GetInstance<IAuthenticationService>();
             settings = SimpleIoc.Default.GetInstance<ISettingsService>();
-            settings.ClearSettings();
+            //settings.ClearSettings();
             this.InitializeComponent();
             Loaded +=  async (s, e) =>
             {

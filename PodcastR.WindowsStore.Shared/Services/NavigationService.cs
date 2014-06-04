@@ -11,12 +11,10 @@ namespace PodcastR.Services
     public class NavigationService : INavigationService
     {
         private Frame _frame;
-        private string _state;
 
         public NavigationService(Frame frame)
         {
             _frame = frame;
-            _state = frame.GetNavigationState();
         }
 
         public void Navigate(Type type)
@@ -45,11 +43,6 @@ namespace PodcastR.Services
             {
                 _frame.GoBack();
             }
-        }
-
-        public void Clear()
-        {
-            _frame.SetNavigationState(_state);
         }
     }
 }
