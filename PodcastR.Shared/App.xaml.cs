@@ -73,9 +73,7 @@ namespace PodcastR
 #endif
 
             Frame rootFrame = Window.Current.Content as Frame;
-            SimpleIoc.Default.Register<IPodcastsService, PodcastsService>();
-            SimpleIoc.Default.Register<IAuthenticationService, AuthenticationService>();
-            SimpleIoc.Default.Register<ISettingsService, SettingsService>();
+            RegisterServices();
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
 
@@ -135,8 +133,21 @@ namespace PodcastR
                     throw new Exception("Failed to create initial page");
                 }
             }
+
+            var notificationService = SimpleIoc.Default.GetInstance<INotificationService>();
+
+            await notificationService.RegisterNotificationsAsync();
+
             // Ensure the current window is active
             Window.Current.Activate();
+        }
+
+        private static void RegisterServices()
+        {
+            SimpleIoc.Default.Register<IPodcastsService, PodcastsService>();
+            SimpleIoc.Default.Register<IAuthenticationService, AuthenticationService>();
+            SimpleIoc.Default.Register<ISettingsService, SettingsService>();
+            SimpleIoc.Default.Register<INotificationService, NotificationService>();
         }
 
 #if WINDOWS_PHONE_APP

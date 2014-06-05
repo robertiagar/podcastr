@@ -1,41 +1,46 @@
-﻿using PodcastR.Interfaces;
+﻿using Microsoft.WindowsAzure.Messaging;
+using PodcastR.Interfaces;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Windows.ApplicationModel.Background;
+using System.Threading.Tasks;
+using Windows.UI.Notifications;
+using Windows.Networking.PushNotifications;
 
 namespace PodcastR.Services
 {
     public class NotificationService : INotificationService
     {
-        public void RegisterBackgroundTask()
+        private NotificationHub hub;
+
+        public NotificationService()
         {
-            var taskRegistered = false;
-            var taskName = "UpdatePodcastsTask";
+            hub = new NotificationHub("podcastr", "Endpoint=sb://podcastr-ns.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=ink/oq3X+ZMDTu29EWjRHp+U2AtmgNP4IQP+DiXQhOY=");
+        }
 
-            var tasks = Windows.ApplicationModel.Background.BackgroundTaskRegistration.AllTasks;
+        public async Task RegisterNotificationsAsync()
+        {
+            var channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
+            var template = TileUpdateManager.GetTemplateContent(TileTemplateType.TileSquare150x150Text01);
+            var text = template.GetElementsByTagName("text");
 
-            foreach (var task in tasks)
-            {
-                var currentTask = task.Value;
+            text[0].AppendChild(template.CreateTextNode("$(Test_text)"));
 
-                if (currentTask.Name == taskName)
-                {
-                    taskRegistered = true;
-                    break;
-                }
-            }
+            await hub.RegisterTemplateAsync(channel.Uri, template, "test");
+        }
 
-            if (!taskRegistered)
-            {
-                var builder = new BackgroundTaskBuilder();
+        public async Task RegisterNotificationsForPodcastAsync(IEnumerable<int> podcastIds)
+        {
+            var channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
 
-                builder.Name = taskName;
-                builder.TaskEntryPoint = "PodcastR.BackgroundTasks.UpdatePodcastsTask";
-                builder.SetTrigger(new PushNotificationTrigger());
+            var podcasts = podcastIds.Select(i => i.ToString());
+            var template  = TileUpdateManager.GetTemplateContent(TileTemplateType.TileSquare150x150Text01);
+            var text = template.GetElementsByTagName("text");
 
-                var task = builder.Register();
-            }
+            text[0].AppendChild(template.CreateTextNode("$Test_text"));
+
+            await hub.RegisterTemplateAsync(channel.Uri, template, "test");
         }
     }
 }

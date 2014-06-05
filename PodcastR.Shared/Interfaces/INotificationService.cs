@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace PodcastR.Interfaces
 {
     public interface INotificationService
     {
-        void RegisterBackgroundTask();
+        Task RegisterNotificationsAsync();
+
+        Task RegisterNotificationsForPodcastAsync(IEnumerable<int> podcastIds);
     }
 }
