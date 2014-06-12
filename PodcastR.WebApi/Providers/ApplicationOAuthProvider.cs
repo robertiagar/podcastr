@@ -10,6 +10,7 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using PodcastR.WebApi.Models;
+using PodcastR.ApiCore.Models;
 
 namespace PodcastR.WebApi.Providers
 {

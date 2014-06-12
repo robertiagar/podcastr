@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using PodcastR.WebApi.Models;
+using PodcastR.ApiCore.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 using System.Web;
 using System.Xml.Serialization;
 
-namespace PodcastR.WebApi.Core.Entities
+namespace PodcastR.ApiCore.Entities
 {
     public class Podcast
     {

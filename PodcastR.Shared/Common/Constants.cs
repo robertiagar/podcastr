@@ -6,6 +6,6 @@ namespace PodcastR.Common
 {
     public static class Constants
     {
-        public static readonly string ApplicationUri = "http://localhost:13754/";
+        public static readonly string ApplicationUri = "http://podcastr.azurewebsites.net/";
     }
 }

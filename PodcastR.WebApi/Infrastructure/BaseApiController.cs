@@ -1,11 +1,11 @@
-﻿using PodcastR.WebApi.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
 using System.Net.Http;
 using Microsoft.AspNet.Identity.Owin;
+using PodcastR.ApiCore.Models;
 
 namespace PodcastR.WebApi.Infrastructure
 {

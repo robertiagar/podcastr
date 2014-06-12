@@ -33,7 +33,7 @@ namespace PodcastR.Views
             navigation = SimpleIoc.Default.GetInstance<INavigationService>();
             authentication = SimpleIoc.Default.GetInstance<IAuthenticationService>();
             settings = SimpleIoc.Default.GetInstance<ISettingsService>();
-            //settings.ClearSettings();
+            settings.ClearSettings();
             this.InitializeComponent();
             Loaded +=  async (s, e) =>
             {
@@ -44,10 +44,6 @@ namespace PodcastR.Views
                         if (settings.ExpiresAt > DateTime.Now)
                         {
                             navigation.Navigate(typeof(HubPage));
-                            if (this.Frame.CanGoBack)
-                            {
-                                this.Frame.BackStack.RemoveAt(0);
-                            }
                         }
                         else
                         {
@@ -75,10 +71,6 @@ namespace PodcastR.Views
                 settings.ExpiresAt = token.ExpiresAt;
 
                 navigation.Navigate(typeof(HubPage));
-                if (this.Frame.CanGoBack)
-                {
-                    this.Frame.BackStack.RemoveAt(0);
-                }
             }
         }
     }

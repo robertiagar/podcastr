@@ -8,7 +8,7 @@ using System.Text;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
-namespace PodcastR.WebApi.Core.Entities
+namespace PodcastR.ApiCore.Entities
 {
     public class Episode
     {

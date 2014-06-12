@@ -4,12 +4,12 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using System.Data.Entity;
-using PodcastR.WebApi.Core.Entities;
+using PodcastR.ApiCore.Entities;
 using System.Collections.Generic;
 using System;
 using System.Runtime.Serialization;
 
-namespace PodcastR.WebApi.Models
+namespace PodcastR.ApiCore.Models
 {
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser

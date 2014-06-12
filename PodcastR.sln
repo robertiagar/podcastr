@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PodcastR.Core", "PodcastR.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PodcastR.WebJobs", "PodcastR.WebJobs\PodcastR.WebJobs.csproj", "{AE31DB6B-8E67-41FB-A32D-B941E83A493D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PodcastR.ApiCore", "PodcastR.ApiCore\PodcastR.ApiCore.csproj", "{265EF4F8-091C-405C-BB1F-75D38EF694AF}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		PodcastR.Shared\PodcastR.WindowsStore.Shared.projitems*{e8ade6b2-5a9a-4062-8cef-75e1d263394c}*SharedItemsImports = 4
@@ -157,6 +159,18 @@ Global
 		{AE31DB6B-8E67-41FB-A32D-B941E83A493D}.Release|Win32.ActiveCfg = Release|Any CPU
 		{AE31DB6B-8E67-41FB-A32D-B941E83A493D}.Release|x64.ActiveCfg = Release|Any CPU
 		{AE31DB6B-8E67-41FB-A32D-B941E83A493D}.Release|x86.ActiveCfg = Release|Any CPU
+		{265EF4F8-091C-405C-BB1F-75D38EF694AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{265EF4F8-091C-405C-BB1F-75D38EF694AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{265EF4F8-091C-405C-BB1F-75D38EF694AF}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{265EF4F8-091C-405C-BB1F-75D38EF694AF}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{265EF4F8-091C-405C-BB1F-75D38EF694AF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{265EF4F8-091C-405C-BB1F-75D38EF694AF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{265EF4F8-091C-405C-BB1F-75D38EF694AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{265EF4F8-091C-405C-BB1F-75D38EF694AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{265EF4F8-091C-405C-BB1F-75D38EF694AF}.Release|ARM.ActiveCfg = Release|Any CPU
+		{265EF4F8-091C-405C-BB1F-75D38EF694AF}.Release|Win32.ActiveCfg = Release|Any CPU
+		{265EF4F8-091C-405C-BB1F-75D38EF694AF}.Release|x64.ActiveCfg = Release|Any CPU
+		{265EF4F8-091C-405C-BB1F-75D38EF694AF}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -165,5 +179,6 @@ Global
 		{1F500159-F468-4BA2-BFAB-262E2BD2EE8B} = {15110350-4FFE-4AAF-9127-7115071C1E75}
 		{3AD4703F-8F5B-4F96-BA68-E405CA537466} = {15110350-4FFE-4AAF-9127-7115071C1E75}
 		{E8ADE6B2-5A9A-4062-8CEF-75E1D263394C} = {15110350-4FFE-4AAF-9127-7115071C1E75}
+		{FD382505-5B91-4AC8-8368-96071B9B5C0D} = {15110350-4FFE-4AAF-9127-7115071C1E75}
 	EndGlobalSection
 EndGlobal
