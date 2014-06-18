@@ -43,7 +43,6 @@ namespace PodcastR.ViewModel
                 settingsService.Password = this.Account.Password;
 
                 navigationService.Navigate(typeof(HubPage));
-                
             }
         }
 

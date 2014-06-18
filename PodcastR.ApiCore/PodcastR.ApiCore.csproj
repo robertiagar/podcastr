@@ -76,6 +76,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Comparers\EpisodeComparer.cs" />
     <Compile Include="Entities\Episode.cs" />
     <Compile Include="Entities\Podcast.cs" />
     <Compile Include="Models\IdentityModels.cs" />

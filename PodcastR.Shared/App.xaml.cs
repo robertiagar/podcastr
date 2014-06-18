@@ -134,9 +134,7 @@ namespace PodcastR
                 }
             }
 
-            var notificationService = SimpleIoc.Default.GetInstance<INotificationService>();
-
-            await notificationService.RegisterNotificationsAsync();
+            
 
             // Ensure the current window is active
             Window.Current.Activate();

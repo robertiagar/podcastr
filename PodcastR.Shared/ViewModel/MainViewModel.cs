@@ -37,9 +37,10 @@ namespace PodcastR.ViewModel
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public MainViewModel(IPodcastsService service)
+        public MainViewModel(IPodcastsService service, INotificationService notificationService)
         {
             this.podcastsService = service;
+            this.notificationService = notificationService;
             this._podcasts = new ObservableCollection<PodcastViewModel>();
             this._episodes = new ObservableCollection<EpisodeViewModel>();
             this._downloads = new ObservableCollection<EpisodeViewModel>();
@@ -97,6 +98,8 @@ namespace PodcastR.ViewModel
                     _episodes.Add(episode);
                 }
             }
+
+            await notificationService.RegisterNotificationsAsync();
         }
 
         public async Task LoadNewEpisodesAsync()
@@ -192,6 +195,7 @@ namespace PodcastR.ViewModel
         private NowPlayingViewModel _NowPlaying;
         private IList<PodcastViewModel> allPodcasts;
         private IPodcastsService podcastsService;
+        private INotificationService notificationService;
 
         public NowPlayingViewModel NowPlaying
         {

@@ -24,12 +24,18 @@ namespace PodcastR.Services
         public async Task RegisterNotificationsAsync()
         {
             var channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
-            var template = TileUpdateManager.GetTemplateContent(TileTemplateType.TileSquare150x150Text01);
-            var text = template.GetElementsByTagName("text");
+            var tileTemplate = TileUpdateManager.GetTemplateContent(TileTemplateType.TileSquare150x150Block);
+            var toastTemplate = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
+            var tileText = tileTemplate.GetElementsByTagName("text");
 
-            text[0].AppendChild(template.CreateTextNode("$(Test_text)"));
+            tileText[0].AppendChild(tileTemplate.CreateTextNode("$(EpisodesCount)"));
+            tileText[1].AppendChild(tileTemplate.CreateTextNode("Episodes"));
 
-            await hub.RegisterTemplateAsync(channel.Uri, template, "test", new[] { username });
+            var toastText = toastTemplate.GetElementsByTagName("text");
+            toastText[0].AppendChild(toastTemplate.CreateTextNode("{'You have got '+ $(EpisodesCount) +' new episodes.'}"));
+
+            await hub.RegisterTemplateAsync(channel.Uri, tileTemplate, "tileTemplate", new[] { username });
+            await hub.RegisterTemplateAsync(channel.Uri, toastTemplate, "toastTemplate", new[] { username });
         }
 
         public async Task RegisterNotificationsForPodcastAsync(IEnumerable<int> podcastIds)
