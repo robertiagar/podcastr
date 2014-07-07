@@ -13,12 +13,10 @@ namespace PodcastR.Services
     public class AuthenticationService : IAuthenticationService
     {
         private static HttpClient _client;
-        private ISettingsService settings;
 
-        public AuthenticationService(ISettingsService settings)
+        public AuthenticationService()
         {
             _client = new HttpClient();
-            this.settings = settings;
         }
 
         public async Task<TokenResponse> LoginAsync(string username, string password)

@@ -249,10 +249,6 @@
       <Project>{fd382505-5b91-4ac8-8368-96071b9b5c0d}</Project>
       <Name>PodcastR.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PodcastR.Data\PodcastR.Data.csproj">
-      <Project>{0f3c092e-3265-4e32-b36a-f334a14ebafb}</Project>
-      <Name>PodcastR.Data</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="..\PodcastR.Shared\PodcastR.WindowsStore.Shared.projitems" Label="Shared" />
