@@ -1,0 +1,42 @@
+﻿<Page
+    x:Class="PodcastR.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PodcastR.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    DataContext="{Binding Login, Source={StaticResource Locator}}"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel Orientation="Vertical" 
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Center" Margin="39,0,0,0"
+                    MaxWidth="400"
+                    Width="400">
+            <TextBlock Text="{StaticResource AppName}"
+                       Style="{StaticResource HeaderTextBlockStyle}"></TextBlock>
+
+            <TextBox PlaceholderText="Username" 
+                     Margin="0,20,3,2" 
+                     Text="{Binding Account.Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+            <PasswordBox PlaceholderText="Password" 
+                         Margin="0,2,3,2" 
+                         Password="{Binding Account.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></PasswordBox>
+
+            <Button Content="Login" 
+                    Margin="0,5,5,5" 
+                    Padding="4" 
+                    HorizontalAlignment="Left" 
+                    Command="{Binding LoginCommand}"></Button>
+
+            <TextBlock Style="{StaticResource SubheaderTextBlockStyle}"
+                       Margin="0,5,5,5">
+                Don't have an account? 
+            </TextBlock>
+            <Button Margin="0,5,5,5"
+                    Padding="4"
+                    Command="{Binding RegisterCommand}">Register!</Button>
+        </StackPanel>
+    </Grid>
+</Page>

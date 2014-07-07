@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using PodcastR.WebApi.Core.Entities;
+using PodcastR.ApiCore.Entities;
 using PodcastR.WebApi.Infrastructure;
-using PodcastR.WebApi.Models;
+using PodcastR.ApiCore.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -27,7 +27,7 @@ namespace PodcastR.WebApi.Controllers
         {
             var user = (await UserManager.FindByIdAsync(User.Identity.GetUserId()));
 
-            return await DbContext.Podcasts.Where(p => p.Users.Contains(user)).ToListAsync();
+            return user.Podcasts.ToList();
         }
 
         public async Task<Podcast> Get(int id)

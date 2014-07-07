@@ -16,6 +16,7 @@ using Microsoft.Owin.Security.OAuth;
 using PodcastR.WebApi.Models;
 using PodcastR.WebApi.Providers;
 using PodcastR.WebApi.Results;
+using PodcastR.ApiCore.Models;
 
 namespace PodcastR.WebApi.Controllers
 {

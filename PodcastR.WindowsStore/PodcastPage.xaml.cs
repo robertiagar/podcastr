@@ -1,6 +1,5 @@
 ﻿using PodcastR.Common;
 using PodcastR.Core.Entities;
-using PodcastR.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;

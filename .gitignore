@@ -155,3 +155,5 @@ $RECYCLE.BIN/
 /packages
 PodcastR.WebApi/App_Data/aspnet-PodcastR.WebApi-20140512111802.mdf
 PodcastR.WebApi/App_Data/aspnet-PodcastR.WebApi-20140512111802_log.ldf
+PodcastR.WebApi/App_Data/aspnet-PodcastR.WebApi.mdf
+PodcastR.WebApi/App_Data/aspnet-PodcastR.WebApi_log.ldf
